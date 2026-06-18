@@ -1,0 +1,70 @@
+{
+    "kind": "collectionType",
+    "collectionName": "floorplans",
+    "info": {
+      "singularName": "floorplan",
+      "pluralName": "floorplans",
+      "displayName": "floorplan",
+      "description": ""
+    },
+    "options": {
+      "draftAndPublish": true
+    },
+    "pluginOptions": {},
+    "attributes": {
+      "floorplan_id": {
+        "type": "integer"
+      },
+      "floorplan_name": {
+        "type": "string"
+      },
+      "bed_count": {
+        "type": "integer"
+      },
+      "bath_count": {
+        "type": "integer"
+      },
+      "minSqFt": {
+        "type": "decimal"
+      },
+      "maxSqFt": {
+        "type": "biginteger"
+      },
+      "minRent": {
+        "type": "decimal"
+      },
+      "maxRent": {
+        "type": "decimal"
+      },
+      "maxDeposit": {
+        "type": "string"
+      },
+      "minDeposit": {
+        "type": "string"
+      },
+      "available_unit_count": {
+        "type": "string"
+      },
+      "sort_order": {
+        "type": "integer"
+      },
+      "unit_type_mapping": {
+        "type": "string"
+      },
+      "property_id": {
+        "type": "integer"
+      },
+      "api_refresh_flag": {
+        "type": "integer"
+      },
+      "availability_url": {
+        "type": "string"
+      },
+      "units": {
+        "type": "json"
+      },
+      "floorplan_image": {
+        "type": "string"
+      }
+    }
+  }
