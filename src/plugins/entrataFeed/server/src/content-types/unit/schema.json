@@ -13,6 +13,9 @@
   "pluginOptions": {
     "content-manager": {
       "visible": true
+    },
+    "content-type-builder": {
+      "visible": true
     }
   },
   "attributes": {
@@ -33,7 +36,7 @@
     },
     "floorplan": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "manyToOne",
       "target": "plugin::entratafeed.floorplan"
     },
     "floorplan_name": {
@@ -62,6 +65,9 @@
     },
     "best_price": {
       "type": "decimal"
+    },
+    "occupancy_type": {
+      "type": "string"
     },
     "marketing_name": {
       "type": "string"

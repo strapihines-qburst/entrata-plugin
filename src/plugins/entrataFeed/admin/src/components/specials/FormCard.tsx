@@ -1,5 +1,5 @@
-import { Box, Flex, Typography } from "@strapi/design-system";
-import type { ReactNode } from "react";
+import { Box, Flex, Typography } from '@strapi/design-system';
+import type { ReactNode } from 'react';
 
 type FormCardProps = {
   title: string;

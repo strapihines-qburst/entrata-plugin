@@ -1,7 +1,5 @@
 const syncCollectionSpecial = async (strapi, special) => {
   const associatedType = special.associations;
-  console.log(associatedType);
-console.log(special);
   if (!["Space", "Floor Plan","Unit Type"].includes(associatedType)) {
     return;
   }

@@ -533,6 +533,138 @@ export interface PluginContentReleasesReleaseAction
   };
 }
 
+export interface PluginEntratafeedAmenity extends Struct.CollectionTypeSchema {
+  collectionName: 'amenities';
+  info: {
+    description: '';
+    displayName: 'Amenities';
+    pluralName: 'amenities';
+    singularName: 'amenity';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+    'content-type-builder': {
+      visible: true;
+    };
+  };
+  attributes: {
+    amenitiesList: Schema.Attribute.Component<'plugin::entratafeed.list', true>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    floorLevel: Schema.Attribute.Integer;
+    floorplans: Schema.Attribute.Relation<
+      'oneToMany',
+      'plugin::entratafeed.floorplan'
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'plugin::entratafeed.amenity'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    units: Schema.Attribute.Relation<'oneToMany', 'plugin::entratafeed.unit'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface PluginEntratafeedCommunityCostGuide
+  extends Struct.SingleTypeSchema {
+  collectionName: 'community_cost_guides';
+  info: {
+    displayName: 'Community Cost Guide';
+    pluralName: 'community-cost-guides';
+    singularName: 'community-cost-guide';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+    'content-type-builder': {
+      visible: true;
+    };
+  };
+  attributes: {
+    communityCostGuideDescription: Schema.Attribute.Blocks;
+    communityCostGuideTitle: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    iframeUrl: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'plugin::entratafeed.community-cost-guide'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    totalCostClarityDescription: Schema.Attribute.Blocks;
+    totalCostClarityTitle: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface PluginEntratafeedEngrainPricing
+  extends Struct.SingleTypeSchema {
+  collectionName: 'engrain-pricing';
+  info: {
+    description: '';
+    displayName: 'Engrain Pricing';
+    pluralName: 'engrain-pricing';
+    singularName: 'engrain-pricing';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+    'content-type-builder': {
+      visible: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text;
+    enableEngrainPricing: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>;
+    engrainApiUrl: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'https://api.sightmap.com/v1/assets/21672/multifamily/expenses'>;
+    engrainFeeCalculatorTitle: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Budget With Ease'>;
+    engrainPrice: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'plugin::entratafeed.engrain-pricing'
+    > &
+      Schema.Attribute.Private;
+    longDisclaimer: Schema.Attribute.Text;
+    publishedAt: Schema.Attribute.DateTime;
+    shortDisclaimer: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface PluginEntratafeedFloorplan
   extends Struct.CollectionTypeSchema {
   collectionName: 'floorplans';
@@ -544,6 +676,14 @@ export interface PluginEntratafeedFloorplan
   };
   options: {
     draftAndPublish: true;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+    'content-type-builder': {
+      visible: true;
+    };
   };
   attributes: {
     api_refresh_flag: Schema.Attribute.Integer;
@@ -639,6 +779,9 @@ export interface PluginEntratafeedSpecial extends Struct.CollectionTypeSchema {
     'content-manager': {
       visible: true;
     };
+    'content-type-builder': {
+      visible: true;
+    };
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
@@ -687,6 +830,9 @@ export interface PluginEntratafeedUnit extends Struct.CollectionTypeSchema {
     'content-manager': {
       visible: true;
     };
+    'content-type-builder': {
+      visible: true;
+    };
   };
   attributes: {
     amenity: Schema.Attribute.JSON;
@@ -700,7 +846,7 @@ export interface PluginEntratafeedUnit extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     floor_number: Schema.Attribute.Integer;
     floorplan: Schema.Attribute.Relation<
-      'oneToOne',
+      'manyToOne',
       'plugin::entratafeed.floorplan'
     >;
     floorplan_id: Schema.Attribute.Integer;
@@ -715,6 +861,7 @@ export interface PluginEntratafeedUnit extends Struct.CollectionTypeSchema {
     marketing_name: Schema.Attribute.String;
     max_rent: Schema.Attribute.Decimal;
     min_rent: Schema.Attribute.Decimal;
+    occupancy_type: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     sqft: Schema.Attribute.Integer;
     term_rents: Schema.Attribute.JSON;
@@ -725,6 +872,49 @@ export interface PluginEntratafeedUnit extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface PluginEntratafeedVirtualTour
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'virtual-tours';
+  info: {
+    description: '';
+    displayName: 'Virtual Tour';
+    pluralName: 'virtual-tours';
+    singularName: 'virtual-tour';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+    'content-type-builder': {
+      visible: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    floorplans: Schema.Attribute.Relation<
+      'oneToMany',
+      'plugin::entratafeed.floorplan'
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'plugin::entratafeed.virtual-tour'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    units: Schema.Attribute.Relation<'oneToMany', 'plugin::entratafeed.unit'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    virtualTourList: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
@@ -1148,10 +1338,14 @@ declare module '@strapi/strapi' {
       'admin::user': AdminUser;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
+      'plugin::entratafeed.amenity': PluginEntratafeedAmenity;
+      'plugin::entratafeed.community-cost-guide': PluginEntratafeedCommunityCostGuide;
+      'plugin::entratafeed.engrain-pricing': PluginEntratafeedEngrainPricing;
       'plugin::entratafeed.floorplan': PluginEntratafeedFloorplan;
       'plugin::entratafeed.property-setting': PluginEntratafeedPropertySetting;
       'plugin::entratafeed.special': PluginEntratafeedSpecial;
       'plugin::entratafeed.unit': PluginEntratafeedUnit;
+      'plugin::entratafeed.virtual-tour': PluginEntratafeedVirtualTour;
       'plugin::i18n.locale': PluginI18NLocale;
       'plugin::review-workflows.workflow': PluginReviewWorkflowsWorkflow;
       'plugin::review-workflows.workflow-stage': PluginReviewWorkflowsWorkflowStage;

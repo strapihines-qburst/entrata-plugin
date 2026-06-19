@@ -3,7 +3,105 @@ import buildFp from "./buildFp";
 
 const FLOORPLAN_UID = "plugin::entratafeed.floorplan";
 const UNIT_UID = "plugin::entratafeed.unit";
+const SPECIAL_UID = "plugin::entratafeed.special";
 const PROPERTY_SETTING_UID = "plugin::entratafeed.property-setting";
+
+const asArray = <T>(value: T | T[] | null | undefined): T[] =>
+  !value ? [] : Array.isArray(value) ? value : [value];
+
+const formatSpecialForExport = (special: Record<string, unknown>) => ({
+  special_id: special.special_id,
+  special_type: special.special_type,
+  floorplanTypes: special.floorplanTypes ?? null,
+  ...(typeof special.specials === "object" && special.specials
+    ? (special.specials as Record<string, unknown>)
+    : {}),
+});
+
+const appendSpecial = (
+  map: Map<number | string, ReturnType<typeof formatSpecialForExport>[]>,
+  key: number | string | null | undefined,
+  special: Record<string, unknown>,
+) => {
+  if (key == null || key === "") {
+    return;
+  }
+
+  const formatted = formatSpecialForExport(special);
+
+  if (!map.has(key)) {
+    map.set(key, []);
+  }
+
+  const existing = map.get(key)!;
+  if (
+    !existing.some(
+      (item) =>
+        item.special_id === formatted.special_id &&
+        item.special_type === formatted.special_type,
+    )
+  ) {
+    existing.push(formatted);
+  }
+};
+
+const buildSpecialsMaps = (
+  specials: Record<string, unknown>[],
+  floorplans: Record<string, unknown>[],
+) => {
+  const specialsByFloorplanId = new Map<
+    number | string,
+    ReturnType<typeof formatSpecialForExport>[]
+  >();
+  const specialsByUnitSpaceId = new Map<
+    number | string,
+    ReturnType<typeof formatSpecialForExport>[]
+  >();
+
+  for (const special of specials) {
+    if (special.special_type === "floorplan") {
+      for (const floorplan of asArray(
+        special.floorplans as Record<string, unknown>[],
+      )) {
+        appendSpecial(
+          specialsByFloorplanId,
+          floorplan.floorplan_id as number | string,
+          special,
+        );
+      }
+    }
+
+    if (special.special_type === "unit") {
+      for (const unit of asArray(special.units as Record<string, unknown>[])) {
+        appendSpecial(
+          specialsByUnitSpaceId,
+          unit.unit_space_id as number | string,
+          special,
+        );
+      }
+    }
+
+    if (special.special_type === "floorplanType") {
+      const typeIds = new Set(
+        asArray(special.floorplanTypes as { id?: number | string }[]).map(
+          (item) => String(item?.id ?? item),
+        ),
+      );
+
+      for (const floorplan of floorplans) {
+        if (typeIds.has(String(floorplan.unit_type_id))) {
+          appendSpecial(
+            specialsByFloorplanId,
+            floorplan.floorplan_id as number | string,
+            special,
+          );
+        }
+      }
+    }
+  }
+
+  return { specialsByFloorplanId, specialsByUnitSpaceId };
+};
 
 const pushToDb = async (
   value1: any[],
@@ -99,6 +197,29 @@ const pushToDb = async (
     }),
   );
 
+  const unitFloorplanIds = [
+    ...new Set(
+      unitsWithAmenities
+        .map((unit) => unit.floorplan_id)
+        .filter((id) => id != null && id !== ""),
+    ),
+  ];
+  const missingFloorplanIds = unitFloorplanIds.filter(
+    (id) => !floorplanMap.has(id),
+  );
+
+  if (missingFloorplanIds.length) {
+    const linkedFloorplans = await strapi.documents(FLOORPLAN_UID).findMany({
+      filters: { floorplan_id: { $in: missingFloorplanIds } },
+      status: "published",
+      pagination: { pageSize: missingFloorplanIds.length },
+    });
+
+    for (const floorplan of linkedFloorplans) {
+      floorplanMap.set(floorplan.floorplan_id, floorplan.documentId);
+    }
+  }
+
   const unitSpaceIds = unitsWithAmenities
     .map((unit) => unit.unit_space_id)
     .filter((id) => id != null && id !== "");
@@ -120,9 +241,14 @@ const pushToDb = async (
   await Promise.all(
     unitsWithAmenities.map(async (unit) => {
       const floorplanDocumentId = floorplanMap.get(unit.floorplan_id);
+      const { floorplan: _floorplan, ...unitFields } = unit;
       const unitData = {
-        ...unit,
-        ...(floorplanDocumentId && { floorplan: floorplanDocumentId }),
+        ...unitFields,
+        ...(floorplanDocumentId && {
+          floorplan: {
+            set: [{ documentId: floorplanDocumentId }],
+          },
+        }),
       };
 
       const existing = existingUnitBySpaceId.get(unit.unit_space_id);
@@ -156,11 +282,32 @@ const pushToDb = async (
     unitsByFloorplan.get(unit.floorplan_id)!.push(unit);
   }
 
-  const floorplansWithUnits = floorplans.map((floorplan) => ({
-    ...floorplan,
-    units: unitsByFloorplan.get(floorplan.floorplan_id) || [],
-  }));
+  const specials = await strapi.documents(SPECIAL_UID).findMany({
+    populate: ["floorplans", "units", "specials"],
+    status: "published",
+    pagination: { pageSize: 1000 },
+  });
 
+  const { specialsByFloorplanId, specialsByUnitSpaceId } = buildSpecialsMaps(
+    specials,
+    floorplans,
+  );
+
+  const floorplansWithUnits = floorplans.map((floorplan) => {
+    const units = (unitsByFloorplan.get(floorplan.floorplan_id) || []).map(
+      (unit) => ({
+        ...unit,
+        specials: specialsByUnitSpaceId.get(unit.unit_space_id) || [],
+      }),
+    );
+
+    return {
+      ...floorplan,
+      specials: specialsByFloorplanId.get(floorplan.floorplan_id) || [],
+      units,
+    };
+  });
+console.log(floorplansWithUnits);
   // const propertySetting = await strapi
   //   .documents(PROPERTY_SETTING_UID)
   //   .findFirst({
@@ -168,18 +315,15 @@ const pushToDb = async (
   //     status: "published",
   //   });
 
-  const s3 = strapi.plugin("entratafeed").service("s3");
-  const [url] = await Promise.all([
-    s3.uploadJson(floorplansWithUnits, "feeds/floorplans.json"),
+  // const s3 = strapi.plugin("entratafeed").service("s3");
+  // const [url] = await Promise.all([
+  //   s3.uploadJson(floorplansWithUnits, "feeds/floorplans.json"),
     // s3.uploadJson(propertySetting, "feeds/property-generic-details.json"),
-  ]);
-  await buildFp();
+  // ]);
+  // await buildFp();
   return {
-    floorplansCreated: createdFloorplans,
-    floorplansUpdated: updatedFloorplans,
-    unitsCreated: createdUnits,
-    unitsUpdated: updatedUnits,
-    url,
+    floorplansWithUnits,
+    // url,
     // propertySettingUrl,
   };
 };

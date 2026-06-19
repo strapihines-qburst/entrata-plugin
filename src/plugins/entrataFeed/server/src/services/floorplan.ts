@@ -10,14 +10,14 @@ import importSpecials from "../utils/specials";
 const ENTRATA_PROPERTY_ID = Number(process.env.ENTRATA_PROPERTY_ID || 100124923);
 
 const DEFAULT_UNIT_PARAMS = {
-  availableUnitsOnly: "0",
-  unavailableUnitsOnly: "0",
-  skipPricing: "0",
-  showChildProperties: "1",
-  includeDisabledFloorplans: "0",
-  includeDisabledUnits: "1",
-  showUnitSpaces: "1",
-  useSpaceConfiguration: "0",
+  // availableUnitsOnly: "0",
+  // unavailableUnitsOnly: "0",
+  // skipPricing: "0",
+  // showChildProperties: "1",
+  includeDisabledFloorplans: '1',
+  includeDisabledUnits: '1',
+  showUnitSpaces: '1',
+  // useSpaceConfiguration: "0",
 };
 
 export default ({ strapi }: { strapi: Core.Strapi }) => ({
@@ -26,7 +26,7 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
       const entrataUrl = process.env.ENTRATA_URL;
       const entrataApiKey = process.env.ENTRATA_API_KEY;
 
-      const [availability, property,mits ] = await Promise.all([
+      const [availability, property,mits,specials] = await Promise.all([
         externalApi(
           "getUnitsAvailabilityAndPricing",
           { propertyId: ENTRATA_PROPERTY_ID, ...DEFAULT_UNIT_PARAMS },
@@ -48,13 +48,13 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
           entrataApiKey,
           "r1"
         ),
-        // externalApi(
-        //   "getSpecials",
-        //   { propertyId: ENTRATA_PROPERTY_ID },
-        //   entrataUrl,
-        //   entrataApiKey,
-        //   "r4"
-        // ),
+        externalApi(
+          "getSpecials",
+          { propertyId: ENTRATA_PROPERTY_ID },
+          entrataUrl,
+          entrataApiKey,
+          "r4"
+        ),
       ]);
 
       const [fpUnits, units, { mitsUnits, amenities }] = await Promise.all([
@@ -64,15 +64,15 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
       ]);
 
       // const fpUnits = await floorplanUnits(availability);
+      await importSpecials(strapi, specials);
 
       const count = await pushToDb(fpUnits, mitsUnits, units, amenities);
       // await pushToDb(fpUnits);
-      // await importSpecials(strapi, special);
 
       return {
         success: true,
         message: `floorplans synced successfully`,
-        // count,
+        count,
       };
     } catch (error) {
       strapi.log.error("Entrata API Error", error);
@@ -87,6 +87,20 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
   //    return specials;
   //   } catch (error) {
   //     strapi.log.error("Error getting specials", error);
+  //     throw error;
+  //   }
+  // }
+
+  // async getFeedData() {
+  //   try {
+  //     const entrataUrl = process.env.ENTRATA_URL;
+  //     const entrataApiKey = process.env.ENTRATA_API_KEY;
+
+  //     const availability  = await externalApi("getUnitsAvailabilityAndPricing", { propertyId: ENTRATA_PROPERTY_ID, ...DEFAULT_UNIT_PARAMS }, entrataUrl, entrataApiKey, "r1");
+  //     const { parsedFp, parsedUnits } = await floorplanUnits(availability);
+  //     return { parsedFp, parsedUnits };
+  //   } catch (error) {
+  //     strapi.log.error("Error getting feed data", error);
   //     throw error;
   //   }
   // }

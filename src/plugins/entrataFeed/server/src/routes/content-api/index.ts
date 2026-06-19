@@ -18,5 +18,11 @@ export default () => ({
       handler: "floorplanController.generate",
       config: bearerAuthConfig,
     },
+    {
+      method: "POST",
+      path: "/engrain-pricing/updateEngrainPrice",
+      handler: "engrainCalculatorController.updateEngrainPrice",
+      config: bearerAuthConfig,
+    },
   ],
 });

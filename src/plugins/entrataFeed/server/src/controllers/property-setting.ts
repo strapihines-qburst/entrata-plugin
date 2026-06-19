@@ -20,10 +20,7 @@ const handlePropertySettingError = (
 
 export default {
   async find(ctx) {
-    ctx.body = await strapi
-      .plugin("entratafeed")
-      .service("special")
-      .getPropertySetting();
+    ctx.body = await strapi.plugin('entratafeed').service('special').getPropertySetting();
   },
 
   async update(ctx) {
@@ -33,18 +30,18 @@ export default {
       const { publish: _publish, ...data } = body;
 
       ctx.body = await strapi
-        .plugin("entratafeed")
-        .service("special")
+        .plugin('entratafeed')
+        .service('special')
         .updatePropertySetting(data, { publish: shouldPublish });
     } catch (error) {
-      handlePropertySettingError(ctx, "property-setting update", error);
+      handlePropertySettingError(ctx, 'property-setting update', error);
     }
   },
 
   async publish(ctx) {
     try {
       const body = ctx.request.body as Record<string, unknown> | undefined;
-      const service = strapi.plugin("entratafeed").service("special");
+      const service = strapi.plugin('entratafeed').service('special');
 
       if (body && Object.keys(body).length > 0) {
         const { publish: _publish, ...data } = body;
@@ -53,7 +50,7 @@ export default {
         ctx.body = await service.publishPropertySetting();
       }
     } catch (error) {
-      handlePropertySettingError(ctx, "property-setting publish", error);
+      handlePropertySettingError(ctx, 'property-setting publish', error);
     }
   },
 };

@@ -1,21 +1,16 @@
-import { Box, Button, Divider, Flex } from "@strapi/design-system";
-import { useIntl } from "react-intl";
+import { Box, Button, Divider, Flex } from '@strapi/design-system';
+import { useIntl } from 'react-intl';
 
-import { getTranslation } from "../../utils/getTranslation";
+import { getTranslation } from '../../utils/getTranslation';
 
 type SpecialsTabFooterProps = {
   isBusy: boolean;
   onRefresh: () => void;
-  onSave: () => void;
+  onSave?: () => void;
   onPublish: () => void;
 };
 
-const SpecialsTabFooter = ({
-  isBusy,
-  onRefresh,
-  onSave,
-  onPublish,
-}: SpecialsTabFooterProps) => {
+const SpecialsTabFooter = ({ isBusy, onRefresh, onSave, onPublish }: SpecialsTabFooterProps) => {
   const { formatMessage } = useIntl();
 
   return (
@@ -23,13 +18,15 @@ const SpecialsTabFooter = ({
       <Divider />
       <Flex justifyContent="center" gap={2} paddingTop={4}>
         <Button variant="secondary" onClick={onRefresh} disabled={isBusy}>
-          {formatMessage({ id: getTranslation("specials.refresh") })}
+          {formatMessage({ id: getTranslation('specials.refresh') })}
         </Button>
-        <Button variant="secondary" onClick={onSave} loading={isBusy}>
-          {formatMessage({ id: getTranslation("specials.save") })}
-        </Button>
+        {onSave ? (
+          <Button variant="secondary" onClick={onSave} loading={isBusy}>
+            {formatMessage({ id: getTranslation('specials.save') })}
+          </Button>
+        ) : null}
         <Button onClick={onPublish} loading={isBusy}>
-          {formatMessage({ id: getTranslation("specials.publish") })}
+          {formatMessage({ id: getTranslation('specials.publish') })}
         </Button>
       </Flex>
     </Box>

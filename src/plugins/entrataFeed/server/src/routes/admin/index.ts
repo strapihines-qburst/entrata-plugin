@@ -17,5 +17,45 @@ export default () => ({
         policies: [],
       },
     },
+    {
+      method: "GET",
+      path: "/community-cost-guide",
+      handler: "communityCostGuideController.find",
+      config: {
+        policies: [],
+      },
+    },
+    {
+      method: "GET",
+      path: "/engrain-pricing",
+      handler: "engrainCalculatorController.find",
+      config: {
+        policies: [],
+      },
+    },
+    {
+      method: "POST",
+      path: "/engrain-pricing/updateEngrainPrice",
+      handler: "engrainCalculatorController.updateEngrainPrice",
+      config: {
+        policies: [],
+      },
+    },
+    {
+      method: "POST",
+      path: "/engrain-pricing/publish",
+      handler: "engrainCalculatorController.publish",
+      config: {
+        policies: [],
+      },
+    },
+    // {
+    //   method: "PUT",
+    //   path: "/community-cost-guide",
+    //   handler: "communityCostGuideController.update",
+    //   config: {
+    //     policies: [],
+    //   },
+    // },
   ],
 });

@@ -1,17 +1,10 @@
-import { type ChangeEvent } from "react";
-import {
-  Checkbox,
-  Field,
-  Flex,
-  TextInput,
-  Textarea,
-  Typography,
-} from "@strapi/design-system";
-import { useIntl } from "react-intl";
+import { type ChangeEvent } from 'react';
+import { Checkbox, Field, Flex, TextInput, Textarea, Typography } from '@strapi/design-system';
+import { useIntl } from 'react-intl';
 
-import { getTranslation } from "../../utils/getTranslation";
-import type { SpecialFormState } from "../../utils/specials/types";
-import { SpecialLinksEditor } from "./SpecialLinksEditor";
+import { getTranslation } from '../../utils/getTranslation';
+import type { SpecialFormState } from '../../utils/specials/types';
+import { SpecialLinksEditor } from './SpecialLinksEditor';
 
 type FeedSpecialFormProps = {
   name: string;
@@ -25,24 +18,22 @@ const FeedSpecialForm = ({ name, special, onChange }: FeedSpecialFormProps) => {
   return (
     <Flex direction="column" gap={4} width="100%">
       <Typography variant="sigma" textColor="neutral500">
-        {formatMessage({ id: getTranslation("specials.original.heading") })}
+        {formatMessage({ id: getTranslation('specials.original.heading') })}
       </Typography>
 
       <Field.Root name={`${name}-feed-title`} width="100%">
-        <Field.Label>
-          {formatMessage({ id: getTranslation("specials.label.title") })}
-        </Field.Label>
+        <Field.Label>{formatMessage({ id: getTranslation('specials.label.title') })}</Field.Label>
         <TextInput
           name={`${name}-feed-title`}
           value={special.specialTitle}
           disabled
-          style={{ width: "100%" }}
+          style={{ width: '100%' }}
         />
       </Field.Root>
 
       <Field.Root name={`${name}-feed-description`} width="100%">
         <Field.Label>
-          {formatMessage({ id: getTranslation("specials.label.description") })}
+          {formatMessage({ id: getTranslation('specials.label.description') })}
         </Field.Label>
         <Textarea
           name={`${name}-feed-description`}
@@ -56,23 +47,23 @@ const FeedSpecialForm = ({ name, special, onChange }: FeedSpecialFormProps) => {
         <Flex gap={2} alignItems="center">
           <Checkbox
             checked={special.showSpecials}
-            onCheckedChange={(checked: boolean | "indeterminate") =>
+            onCheckedChange={(checked: boolean | 'indeterminate') =>
               onChange({ showSpecials: checked === true })
             }
           />
           <Typography variant="omega">
-            {formatMessage({ id: getTranslation("specials.show.label") })}
+            {formatMessage({ id: getTranslation('specials.show.label') })}
           </Typography>
         </Flex>
         <Flex gap={2} alignItems="center">
           <Checkbox
             checked={special.isOverRide}
-            onCheckedChange={(checked: boolean | "indeterminate") =>
+            onCheckedChange={(checked: boolean | 'indeterminate') =>
               onChange({ isOverRide: checked === true })
             }
           />
           <Typography variant="omega">
-            {formatMessage({ id: getTranslation("specials.override.label") })}
+            {formatMessage({ id: getTranslation('specials.override.label') })}
           </Typography>
         </Flex>
       </Flex>
@@ -81,7 +72,7 @@ const FeedSpecialForm = ({ name, special, onChange }: FeedSpecialFormProps) => {
         <Flex direction="column" gap={4} width="100%">
           <Field.Root name={`${name}-override-title`} width="100%">
             <Field.Label>
-              {formatMessage({ id: getTranslation("specials.label.customTitle") })}
+              {formatMessage({ id: getTranslation('specials.label.customTitle') })}
             </Field.Label>
             <TextInput
               name={`${name}-override-title`}
@@ -89,13 +80,13 @@ const FeedSpecialForm = ({ name, special, onChange }: FeedSpecialFormProps) => {
               onChange={(e: ChangeEvent<HTMLInputElement>) =>
                 onChange({ overRideText: e.target.value })
               }
-              style={{ width: "100%" }}
+              style={{ width: '100%' }}
             />
           </Field.Root>
           <Field.Root name={`${name}-override-description`} width="100%">
             <Field.Label>
               {formatMessage({
-                id: getTranslation("specials.label.customDescription"),
+                id: getTranslation('specials.label.customDescription'),
               })}
             </Field.Label>
             <Textarea

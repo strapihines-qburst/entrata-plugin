@@ -23,6 +23,16 @@ export interface PluginEntratafeedLink extends Struct.ComponentSchema {
   };
 }
 
+export interface PluginEntratafeedList extends Struct.ComponentSchema {
+  collectionName: 'components_entratafeed_lists';
+  info: {
+    displayName: 'List';
+  };
+  attributes: {
+    list: Schema.Attribute.Text;
+  };
+}
+
 export interface PluginEntratafeedSpecialDetails
   extends Struct.ComponentSchema {
   collectionName: 'components_entratafeed_special_details';
@@ -46,6 +56,7 @@ declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
       'plugin::entratafeed.link': PluginEntratafeedLink;
+      'plugin::entratafeed.list': PluginEntratafeedList;
       'plugin::entratafeed.special-details': PluginEntratafeedSpecialDetails;
     }
   }

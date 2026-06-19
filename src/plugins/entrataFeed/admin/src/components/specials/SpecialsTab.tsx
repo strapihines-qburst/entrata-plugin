@@ -1,13 +1,13 @@
-import { Box, Button, Divider, Flex, Typography } from "@strapi/design-system";
-import { Plus } from "@strapi/icons";
-import { useIntl } from "react-intl";
+import { Box, Button, Divider, Flex, Typography } from '@strapi/design-system';
+import { Plus } from '@strapi/icons';
+import { useIntl } from 'react-intl';
 
-import { useSpecialsTab } from "../../hooks/useSpecialsTab";
-import { getTranslation } from "../../utils/getTranslation";
-import { FeedSpecialForm } from "./FeedSpecialForm";
-import { FormCard } from "./FormCard";
-import { ManualSpecialForm } from "./ManualSpecialForm";
-import { SpecialsTabFooter } from "./SpecialsTabFooter";
+import { useSpecialsTab } from '../../hooks/useSpecialsTab';
+import { getTranslation } from '../../utils/getTranslation';
+import { FeedSpecialForm } from './FeedSpecialForm';
+import { FormCard } from './FormCard';
+import { ManualSpecialForm } from './ManualSpecialForm';
+import { SpecialsTabFooter } from './SpecialsTabFooter';
 
 const SpecialsTab = () => {
   const { formatMessage } = useIntl();
@@ -26,7 +26,7 @@ const SpecialsTab = () => {
   if (isLoading) {
     return (
       <Typography textColor="neutral600">
-        {formatMessage({ id: getTranslation("specials.loading") })}
+        {formatMessage({ id: getTranslation('specials.loading') })}
       </Typography>
     );
   }
@@ -35,7 +35,7 @@ const SpecialsTab = () => {
     <Flex direction="column" width="100%" height="calc(100vh - 14rem)">
       <Box flex="1" overflow="auto" paddingBottom={4} width="100%" style={{ minHeight: 0 }}>
         <Flex direction="column" gap={4} width="100%">
-          <FormCard title={formatMessage({ id: getTranslation("specials.top.title") })}>
+          <FormCard title={formatMessage({ id: getTranslation('specials.top.title') })}>
             <FeedSpecialForm
               name="top"
               special={form.feedTopSpecial}
@@ -49,21 +49,16 @@ const SpecialsTab = () => {
           </FormCard>
 
           <FormCard
-            title={formatMessage({ id: getTranslation("specials.top.manual.heading") })}
+            title={formatMessage({ id: getTranslation('specials.top.manual.heading') })}
             action={
-              <Button
-                variant="secondary"
-                size="S"
-                startIcon={<Plus />}
-                onClick={addManualSpecial}
-              >
-                {formatMessage({ id: getTranslation("specials.top.manual.add") })}
+              <Button variant="secondary" size="S" startIcon={<Plus />} onClick={addManualSpecial}>
+                {formatMessage({ id: getTranslation('specials.top.manual.add') })}
               </Button>
             }
           >
             {form.additionalTopSpecials.length === 0 ? (
               <Typography variant="pi" textColor="neutral500">
-                {formatMessage({ id: getTranslation("specials.top.manual.empty") })}
+                {formatMessage({ id: getTranslation('specials.top.manual.empty') })}
               </Typography>
             ) : (
               <Box width="100%">
@@ -89,7 +84,7 @@ const SpecialsTab = () => {
             )}
           </FormCard>
 
-          <FormCard title={formatMessage({ id: getTranslation("specials.popup.title") })}>
+          <FormCard title={formatMessage({ id: getTranslation('specials.popup.title') })}>
             <FeedSpecialForm
               name="popup"
               special={form.popupSpecial}

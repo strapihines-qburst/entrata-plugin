@@ -3,7 +3,7 @@ const externalApi = async (
   params,
   Entrata_URL,
   Api_Key,
-  version = "r4"
+  version
 ) => {
   try {
     const response = await fetch(Entrata_URL, {

@@ -16,6 +16,7 @@ const register = ({ strapi }: { strapi: Core.Strapi }) => {
     strapi.get("components").set(uid, {
       ...schema,
       __schema__: structuredClone(schema),
+      __filename__: `${modelName}.json`,
       uid,
       category: PLUGIN_NAME,
       modelType: "component",

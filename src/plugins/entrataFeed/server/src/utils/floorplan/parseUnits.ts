@@ -33,6 +33,7 @@ const unitsProperty = async (propertySettingsApi) => {
         has_pricing:
           unitSpace?.hasPricing != null ? Number(unitSpace.hasPricing) : 0,
         best_price: Number(bestPrice) || 0,
+        occupancy_type: unitSpace?.occupancyTypeName ?? null,
         // min_rent: parseFloat(rentAttributes?.minRent || 0),
         // max_rent: parseFloat(rentAttributes?.maxRent || 0),
         unit_status: unitSpace?.availabilityStatus ?? null,
