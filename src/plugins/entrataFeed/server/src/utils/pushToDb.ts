@@ -168,20 +168,30 @@ const pushToDb = async (
   //     status: "published",
   //   });
 
-  // const s3 = strapi.plugin("entratafeed").service("s3");
-  // const [url, propertySettingUrl] = await Promise.all([
-  //   s3.uploadJson(floorplansWithUnits, "feeds/floorplans.json"),
-  //   s3.uploadJson(propertySetting, "feeds/property-generic-details.json"),
-  // ]);
-  // await buildFp();
+  const s3 = strapi.plugin("entratafeed").service("s3");
+  const [url] = await Promise.all([
+    s3.uploadJson(floorplansWithUnits, "feeds/floorplans.json"),
+    // s3.uploadJson(propertySetting, "feeds/property-generic-details.json"),
+  ]);
+  await buildFp();
   return {
     floorplansCreated: createdFloorplans,
     floorplansUpdated: updatedFloorplans,
     unitsCreated: createdUnits,
     unitsUpdated: updatedUnits,
-    // url,
+    url,
     // propertySettingUrl,
   };
 };
+
+// const pushToDb = async (fpUnits: any[]) => {
+//   console.log(fpUnits);
+//   for (const fpUnit of fpUnits) {
+//  await strapi.documents(FLOORPLAN_UID).create({
+//     data: fpUnit.data,
+//     status: "published",
+//   });
+//   }
+//   };
 
 export default pushToDb;

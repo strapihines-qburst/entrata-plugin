@@ -1,4 +1,5 @@
 const buildFp = async () => {
+  console.log("Building floorplans");
   await fetch(process.env.BUILD_API_URL, {
     method: 'POST',
     headers: {

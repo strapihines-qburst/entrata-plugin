@@ -36,14 +36,8 @@
       "maxRent": {
         "type": "decimal"
       },
-      "maxDeposit": {
-        "type": "string"
-      },
-      "minDeposit": {
-        "type": "string"
-      },
       "available_unit_count": {
-        "type": "string"
+        "type": "integer"
       },
       "sort_order": {
         "type": "integer"
@@ -60,11 +54,20 @@
       "availability_url": {
         "type": "string"
       },
-      "units": {
-        "type": "json"
-      },
       "floorplan_image": {
         "type": "string"
+      },
+      "min_availability_date": {
+        "type": "date"
+      },
+      "virtual_tour_url": {
+        "type": "string"
+      },
+      "available_min_rent": {
+        "type": "decimal"
+      },
+      "unit_type_id": {
+        "type": "biginteger"
       }
     }
   }

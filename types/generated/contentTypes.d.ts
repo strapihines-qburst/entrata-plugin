@@ -548,7 +548,8 @@ export interface PluginEntratafeedFloorplan
   attributes: {
     api_refresh_flag: Schema.Attribute.Integer;
     availability_url: Schema.Attribute.String;
-    available_unit_count: Schema.Attribute.String;
+    available_min_rent: Schema.Attribute.Decimal;
+    available_unit_count: Schema.Attribute.Integer;
     bath_count: Schema.Attribute.Integer;
     bed_count: Schema.Attribute.Integer;
     createdAt: Schema.Attribute.DateTime;
@@ -563,20 +564,20 @@ export interface PluginEntratafeedFloorplan
       'plugin::entratafeed.floorplan'
     > &
       Schema.Attribute.Private;
-    maxDeposit: Schema.Attribute.String;
     maxRent: Schema.Attribute.Decimal;
     maxSqFt: Schema.Attribute.BigInteger;
-    minDeposit: Schema.Attribute.String;
+    min_availability_date: Schema.Attribute.Date;
     minRent: Schema.Attribute.Decimal;
     minSqFt: Schema.Attribute.Decimal;
     property_id: Schema.Attribute.Integer;
     publishedAt: Schema.Attribute.DateTime;
     sort_order: Schema.Attribute.Integer;
+    unit_type_id: Schema.Attribute.BigInteger;
     unit_type_mapping: Schema.Attribute.String;
-    units: Schema.Attribute.JSON;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    virtual_tour_url: Schema.Attribute.String;
   };
 }
 
@@ -691,8 +692,9 @@ export interface PluginEntratafeedUnit extends Struct.CollectionTypeSchema {
     amenity: Schema.Attribute.JSON;
     apartment_id: Schema.Attribute.Integer;
     availability_date: Schema.Attribute.String;
+    availability_url: Schema.Attribute.String;
     availabilityStatus: Schema.Attribute.String;
-    best_price: Schema.Attribute.String;
+    best_price: Schema.Attribute.Decimal;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -703,18 +705,22 @@ export interface PluginEntratafeedUnit extends Struct.CollectionTypeSchema {
     >;
     floorplan_id: Schema.Attribute.Integer;
     floorplan_name: Schema.Attribute.String;
+    is_web_visible: Schema.Attribute.Boolean;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'plugin::entratafeed.unit'
     > &
       Schema.Attribute.Private;
-    max_rent: Schema.Attribute.String;
-    min_rent: Schema.Attribute.String;
+    marketing_name: Schema.Attribute.String;
+    max_rent: Schema.Attribute.Decimal;
+    min_rent: Schema.Attribute.Decimal;
     publishedAt: Schema.Attribute.DateTime;
     sqft: Schema.Attribute.Integer;
+    term_rents: Schema.Attribute.JSON;
     unit_number: Schema.Attribute.String;
     unit_space_id: Schema.Attribute.Integer;
+    unit_type_id: Schema.Attribute.BigInteger;
     unitId: Schema.Attribute.Integer;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &

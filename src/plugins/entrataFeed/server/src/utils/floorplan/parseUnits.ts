@@ -27,13 +27,21 @@ const unitsProperty = async (propertySettingsApi) => {
         apartment_id: unit.buildingId ? Number(unit.buildingId) : null,
         availabilityStatus: unitSpace.availabilityStatus || null,
         availability_date:formatDate(unitSpace.availableDate) || null,
-        sqft: unit.SquareFeet ? Number(unit.SquareFeet) : null,
-        min_rent: String(rentAttributes.minRent || 0),
-        max_rent: String(rentAttributes.maxRent || 0),
-        best_price: String(bestPrice || 0),
-        // min_deposit: unitSpace.minDeposit || 0,
-        // max_deposit: unitSpace.maxDeposit || 0,
+        sqft: unit?.SquareFeet != null ? Number(unit.SquareFeet) : null,
+        deposit:
+          unitSpace?.minDeposit != null ? Number(unitSpace.minDeposit) : 0,
+        has_pricing:
+          unitSpace?.hasPricing != null ? Number(unitSpace.hasPricing) : 0,
+        best_price: Number(bestPrice) || 0,
+        // min_rent: parseFloat(rentAttributes?.minRent || 0),
+        // max_rent: parseFloat(rentAttributes?.maxRent || 0),
+        unit_status: unitSpace?.availabilityStatus ?? null,
+        availability_url: unitSpace?.unitAvailabilityURL ?? null,
+        term_rents: { term_rents: termRent },
+        sort_order:
+          unit?.numberOfBedrooms != null ? Number(unit.numberOfBedrooms) : 0,
       };
+      
     });
   });
 

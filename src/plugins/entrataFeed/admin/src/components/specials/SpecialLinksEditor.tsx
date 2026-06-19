@@ -132,8 +132,8 @@ const SpecialLinksEditor = ({
                     </Field.Label>
                     <SingleSelect
                       value={link.target}
-                      onChange={(value: LinkTarget) =>
-                        updateLink(link.clientId, { target: value })
+                      onChange={(value) =>
+                        updateLink(link.clientId, { target: value as LinkTarget })
                       }
                       disabled={disabled}
                     >
