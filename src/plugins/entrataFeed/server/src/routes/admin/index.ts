@@ -26,6 +26,14 @@ export default () => ({
       },
     },
     {
+      method: "POST",
+      path: "/community-cost-guide/publish",
+      handler: "communityCostGuideController.publish",
+      config: {
+        policies: [],
+      },
+    },
+    {
       method: "GET",
       path: "/engrain-pricing",
       handler: "engrainCalculatorController.find",
@@ -49,13 +57,5 @@ export default () => ({
         policies: [],
       },
     },
-    // {
-    //   method: "PUT",
-    //   path: "/community-cost-guide",
-    //   handler: "communityCostGuideController.update",
-    //   config: {
-    //     policies: [],
-    //   },
-    // },
   ],
 });

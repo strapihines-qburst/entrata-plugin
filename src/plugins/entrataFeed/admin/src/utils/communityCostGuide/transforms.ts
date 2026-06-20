@@ -26,10 +26,7 @@ export const toCommunityCostGuideForm = (
   iframeUrl: guide?.iframeUrl ?? "",
 });
 
-export const toCommunityCostGuidePayload = (
-  form: CommunityCostGuideForm,
-  publish = false,
-) => ({
+export const toCommunityCostGuidePayload = (form: CommunityCostGuideForm) => ({
   totalCostClarityTitle: form.totalCostClarityTitle,
   totalCostClarityDescription: plainTextToBlocks(
     form.totalCostClarityDescription,
@@ -39,5 +36,4 @@ export const toCommunityCostGuidePayload = (
     form.communityCostGuideDescription,
   ),
   iframeUrl: form.iframeUrl,
-  ...(publish ? { publish: true } : {}),
 });

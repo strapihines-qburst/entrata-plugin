@@ -12,7 +12,7 @@ import { SpecialsTabFooter } from './specials/SpecialsTabFooter';
 
 const CommunityCostGuideTab = () => {
   const { formatMessage } = useIntl();
-  const { form, setForm, isLoading, isBusy, loadGuide, handleSave, handlePublish } =
+  const { form, setForm, isLoading, isBusy, loadGuide, handlePublish } =
     useCommunityCostGuideTab();
 
   if (isLoading) {
@@ -157,7 +157,6 @@ const CommunityCostGuideTab = () => {
       <SpecialsTabFooter
         isBusy={isBusy}
         onRefresh={loadGuide}
-        onSave={handleSave}
         onPublish={handlePublish}
       />
     </Flex>

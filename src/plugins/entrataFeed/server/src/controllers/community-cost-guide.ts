@@ -16,24 +16,17 @@ const handleError = (ctx: { status: number; body: unknown }, label: string, erro
 
 export default {
   async find(ctx) {
-    ctx.body = await strapi
-      .plugin('entratafeed')
-      .service('communityCostGuide')
-      .getCommunityCostGuide();
+    ctx.body = await strapi.plugin('entratafeed').service('communityCostGuide').find();
   },
 
-  async update(ctx) {
+  async publish(ctx) {
     try {
-      const body = ctx.request.body as Record<string, unknown>;
-      const shouldPublish = body.publish === true;
-      const { publish: _publish, ...data } = body;
-
       ctx.body = await strapi
         .plugin('entratafeed')
         .service('communityCostGuide')
-        .updateCommunityCostGuide(data, { publish: shouldPublish });
+        .publish(ctx.request.body as Record<string, unknown>);
     } catch (error) {
-      handleError(ctx, 'community-cost-guide update', error);
+      handleError(ctx, 'community-cost-guide publish', error);
     }
   },
 };

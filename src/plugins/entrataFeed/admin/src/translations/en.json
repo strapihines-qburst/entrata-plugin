@@ -52,8 +52,6 @@
   "communityCostGuide.label.iframeUrl": "Iframe URL",
   "communityCostGuide.loading": "Loading...",
   "communityCostGuide.load.error": "Failed to load community cost guide.",
-  "communityCostGuide.save.success": "Draft saved.",
-  "communityCostGuide.save.error": "Failed to save.",
   "communityCostGuide.publish.success": "Published.",
   "communityCostGuide.publish.error": "Failed to publish.",
   "communityCostGuide.manage": "Open in Content Manager",

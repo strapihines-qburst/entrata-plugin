@@ -3,7 +3,10 @@ import { useFetchClient, useNotification } from "@strapi/strapi/admin";
 import { useIntl } from "react-intl";
 
 import { getTranslation } from "../utils/getTranslation";
-import { COMMUNITY_COST_GUIDE_PATH } from "../utils/communityCostGuide/constants";
+import {
+  COMMUNITY_COST_GUIDE_PATH,
+  COMMUNITY_COST_GUIDE_PUBLISH_PATH,
+} from "../utils/communityCostGuide/constants";
 import {
   emptyCommunityCostGuideForm,
   toCommunityCostGuideForm,
@@ -16,7 +19,7 @@ import type {
 
 export const useCommunityCostGuideTab = () => {
   const { formatMessage } = useIntl();
-  const { get, put } = useFetchClient();
+  const { get, post } = useFetchClient();
   const { toggleNotification } = useNotification();
 
   const [form, setForm] = useState<CommunityCostGuideForm>(
@@ -56,58 +59,32 @@ export const useCommunityCostGuideTab = () => {
     loadGuide();
   }, [loadGuide]);
 
-  const persistGuide = useCallback(
-    async (nextForm: CommunityCostGuideForm, publish = false) => {
-      await put(
-        COMMUNITY_COST_GUIDE_PATH,
-        toCommunityCostGuidePayload(nextForm, publish),
+  const handlePublish = useCallback(async () => {
+    setIsBusy(true);
+
+    try {
+      await post(
+        COMMUNITY_COST_GUIDE_PUBLISH_PATH,
+        toCommunityCostGuidePayload(formRef.current),
       );
-    },
-    [put],
-  );
-
-  const runAction = useCallback(
-    async (
-      action: () => Promise<void>,
-      successMessageId: string,
-      errorMessageId: string,
-    ) => {
-      setIsBusy(true);
-
-      try {
-        await action();
-        toggleNotification({
-          type: "success",
-          message: formatMessage({ id: getTranslation(successMessageId) }),
-        });
-        await loadGuide();
-      } catch {
-        toggleNotification({
-          type: "danger",
-          message: formatMessage({ id: getTranslation(errorMessageId) }),
-        });
-      } finally {
-        setIsBusy(false);
-      }
-    },
-    [formatMessage, loadGuide, toggleNotification],
-  );
-
-  const handleSave = useCallback(() => {
-    return runAction(
-      () => persistGuide(formRef.current),
-      "communityCostGuide.save.success",
-      "communityCostGuide.save.error",
-    );
-  }, [persistGuide, runAction]);
-
-  const handlePublish = useCallback(() => {
-    return runAction(
-      () => persistGuide(formRef.current, true),
-      "communityCostGuide.publish.success",
-      "communityCostGuide.publish.error",
-    );
-  }, [persistGuide, runAction]);
+      toggleNotification({
+        type: "success",
+        message: formatMessage({
+          id: getTranslation("communityCostGuide.publish.success"),
+        }),
+      });
+      await loadGuide();
+    } catch {
+      toggleNotification({
+        type: "danger",
+        message: formatMessage({
+          id: getTranslation("communityCostGuide.publish.error"),
+        }),
+      });
+    } finally {
+      setIsBusy(false);
+    }
+  }, [formatMessage, loadGuide, post, toggleNotification]);
 
   return {
     form,
@@ -115,7 +92,6 @@ export const useCommunityCostGuideTab = () => {
     isLoading,
     isBusy,
     loadGuide,
-    handleSave,
     handlePublish,
   };
 };
