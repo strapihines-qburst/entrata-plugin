@@ -1,6 +1,6 @@
 export default () => ({
     'entratafeed': {
-        enabled: true,
-        resolve: './src/plugins/entrataFeed'
+        enabled: false,
+        // resolve: './src/plugins/entrataFeed'
     }
 });
