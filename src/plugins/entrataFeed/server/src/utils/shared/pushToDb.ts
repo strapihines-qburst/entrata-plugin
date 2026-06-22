@@ -1,4 +1,5 @@
 import { FLOORPLAN_UID, UNIT_UID } from "../../constants/api-constants";
+import getFeedDetails from "./dbCalls";
 type FloorplanDoc = {
   documentId: string;
   floorplan_id: number;
@@ -372,125 +373,38 @@ const pushToDb = async (
     };
   });
 
-  // 2. Group units by floorplan
-  const unitsByFloorplan = new Map();
+  // 2. Group units by floorplan_id
+  const unitsByFloorplan = new Map<number | string, any[]>();
   for (const unit of units) {
     if (!unitsByFloorplan.has(unit.floorplan_id)) {
       unitsByFloorplan.set(unit.floorplan_id, []);
     }
-    unitsByFloorplan.get(unit.floorplan_id).push(unit);
+    unitsByFloorplan.get(unit.floorplan_id)!.push(unit);
   }
 
-  // 3. Add available_min_rent
-  const finalFloorplans = floorplanData.map((fp) => {
+  // 3. Add available_min_rent AND nest matching units together
+  const floorplansWithUnits = floorplanData.map((fp) => {
+    // Look up the units array matching this floorplan's ID
     const relatedUnits = unitsByFloorplan.get(fp.floorplan_id) || [];
+
+    // Calculate minimum rent from the grouped units
     const prices = relatedUnits
       .map((u) => Number(u.best_price))
       .filter((p) => p > 0);
 
     return {
-      ...fp,
-      available_min_rent: prices.length > 0 ? Math.min(...prices) : 0,
-    };
+        ...fp,
+        available_min_rent: prices.length > 0 ? Math.min(...prices) : 0,
+        units: relatedUnits, // <--- This pairs the units directly into the floorplan object
+       };
   });
 
-  // Deduplicate arrays to prevent identical records from double-processing
-  const uniqueFloorplans = Array.from(
-    new Map(finalFloorplans.map((fp) => [fp.floorplan_id, fp])).values()
-  );
-  
-  const uniqueUnits = Array.from(
-    new Map(units.map((u) => [u.unitId, u])).values()
-  );
-
-  // -------------------------
-  // FLOORPLANS PROCESSING
-  // -------------------------
-  const floorplanIds = uniqueFloorplans.map((fp) => fp.floorplan_id);
-
-  const existingFloorplans = await strapi
-    .documents(FLOORPLAN_UID)
-    .findMany({
-      filters: { floorplan_id: { $in: floorplanIds } },
-      status: "published",
-      pagination: { limit: -1 }, 
-    });
-
-  const existingFloorplanMap = new Map<number, any>(
-    existingFloorplans.map((fp: any) => [fp.floorplan_id, fp])
-  );
-
-  for (const fp of uniqueFloorplans) {
-    const existing = existingFloorplanMap.get(fp.floorplan_id);
-
-    if (existing) {
-      await strapi.documents(FLOORPLAN_UID).update({
-        documentId: existing.documentId,
-        data: fp,
-        status: "published",
-      });
-    } else {
-      await strapi.documents(FLOORPLAN_UID).create({
-        data: fp,
-        status: "published",
-      });
-    }
-  }
-
-  // -------------------------
-  // UNITS PROCESSING
-  // -------------------------
-  const unitIds = uniqueUnits.map((unit) => unit.unitId);
-
-  const existingUnits = await strapi
-    .documents(UNIT_UID)
-    .findMany({
-      filters: { unitId: { $in: unitIds } },
-      status: "published",
-      pagination: { limit: -1 },
-    });
-
-  const existingUnitMap = new Map<number, any>(
-    existingUnits.map((unit: any) => [unit.unitId, unit])
-  );
-
-  for (const unit of uniqueUnits) {
-    const existing = existingUnitMap.get(unit.unitId);
-    
-    // Destructure to clean system properties and any incoming floorplan relations
-    const { 
-      id, 
-      documentId, 
-      createdAt, 
-      updatedAt, 
-      publishedAt, 
-      locale,
-      floorplan, // Stripped to ensure old relation objects aren't passed
-      ...cleanUnitFields 
-    } = unit;
-
-    // Payload now only contains pure unit data without the floorplan link
-    const unitData = {
-      ...cleanUnitFields,
-      floorplan: null, 
-    };
-    if (existing) {
-      await strapi.documents(UNIT_UID).update({
-        documentId: existing.documentId,
-        data: unitData,
-        status: "published",
-      });
-    } else {
-      await strapi.documents(UNIT_UID).create({
-        data: unitData,
-        status: "published",
-      });
-    }
-  }
+  // Output format will be: [{ floorplan_id: 1146929, ..., units: [...] }, ...]
+  const feedDetails = await getFeedDetails(strapi);
 
   return {
-    floorplans: uniqueFloorplans.length,
-    units: uniqueUnits.length,
+    floorplans: floorplansWithUnits,
+    feedDetails,
   };
-};``
+};
 export default pushToDb;

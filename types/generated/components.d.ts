@@ -1,5 +1,24 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface PluginEntratafeedApiParams extends Struct.ComponentSchema {
+  collectionName: 'components_entratafeed_api-params';
+  info: {
+    description: '';
+    displayName: 'API Params';
+    icon: 'code';
+  };
+  attributes: {
+    allowLeaseExpirationOverride: Schema.Attribute.Boolean;
+    availableUnitsOnly: Schema.Attribute.Boolean;
+    includeDisabledFloorplans: Schema.Attribute.Boolean;
+    includeDisabledUnits: Schema.Attribute.Boolean;
+    showUnitSpaces: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    skipPricing: Schema.Attribute.Boolean;
+    unavailableUnitsOnly: Schema.Attribute.Boolean;
+    useSpaceConfiguration: Schema.Attribute.Boolean;
+  };
+}
+
 export interface PluginEntratafeedLink extends Struct.ComponentSchema {
   collectionName: 'components_entratafeed_link';
   info: {
@@ -55,6 +74,7 @@ export interface PluginEntratafeedSpecialDetails
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'plugin::entratafeed.api-params': PluginEntratafeedApiParams;
       'plugin::entratafeed.link': PluginEntratafeedLink;
       'plugin::entratafeed.list': PluginEntratafeedList;
       'plugin::entratafeed.special-details': PluginEntratafeedSpecialDetails;

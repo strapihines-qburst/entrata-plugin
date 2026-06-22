@@ -57,5 +57,21 @@ export default () => ({
         policies: [],
       },
     },
+    {
+      method: "GET",
+      path: "/feed-setting",
+      handler: "feedSettingController.find",
+      config: {
+        policies: [],
+      },
+    },
+    {
+      method: "PUT",
+      path: "/feed-setting",
+      handler: "feedSettingController.update",
+      config: {
+        policies: [],
+      },
+    },
   ],
 });

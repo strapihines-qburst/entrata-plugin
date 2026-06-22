@@ -665,6 +665,53 @@ export interface PluginEntratafeedEngrainPricing
   };
 }
 
+export interface PluginEntratafeedFeedSetting extends Struct.SingleTypeSchema {
+  collectionName: 'feed_settings';
+  info: {
+    displayName: 'Feed Settings';
+    pluralName: 'feed-settings';
+    singularName: 'feed-setting';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+    'content-type-builder': {
+      visible: true;
+    };
+  };
+  attributes: {
+    availabilitySettings: Schema.Attribute.Component<
+      'plugin::entratafeed.api-params',
+      false
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'plugin::entratafeed.feed-setting'
+    > &
+      Schema.Attribute.Private;
+    mitsSettings: Schema.Attribute.Component<
+      'plugin::entratafeed.api-params',
+      false
+    >;
+    propertyUnitSettings: Schema.Attribute.Component<
+      'plugin::entratafeed.api-params',
+      false
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface PluginEntratafeedFloorplan
   extends Struct.CollectionTypeSchema {
   collectionName: 'floorplans';
@@ -914,7 +961,7 @@ export interface PluginEntratafeedVirtualTour
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    virtualTourList: Schema.Attribute.String & Schema.Attribute.Required;
+    virtualTourLink: Schema.Attribute.Text & Schema.Attribute.Required;
   };
 }
 
@@ -1341,6 +1388,7 @@ declare module '@strapi/strapi' {
       'plugin::entratafeed.amenity': PluginEntratafeedAmenity;
       'plugin::entratafeed.community-cost-guide': PluginEntratafeedCommunityCostGuide;
       'plugin::entratafeed.engrain-pricing': PluginEntratafeedEngrainPricing;
+      'plugin::entratafeed.feed-setting': PluginEntratafeedFeedSetting;
       'plugin::entratafeed.floorplan': PluginEntratafeedFloorplan;
       'plugin::entratafeed.property-setting': PluginEntratafeedPropertySetting;
       'plugin::entratafeed.special': PluginEntratafeedSpecial;

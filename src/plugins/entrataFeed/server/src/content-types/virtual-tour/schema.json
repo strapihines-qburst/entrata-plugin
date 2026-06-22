@@ -19,8 +19,8 @@
     }
   },
   "attributes": {
-    "virtualTourList": {
-      "type": "string",
+    "virtualTourLink": {
+      "type": "text",
       "required": true
     },
     "floorplans": {

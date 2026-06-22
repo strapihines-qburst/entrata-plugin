@@ -6,6 +6,7 @@ import amenity from './amenity';
 import virtualTour from './virtual-tour';
 import communityCostGuide from './community-cost-guide';
 import engrainPricing from './engrain-pricing';
+import feedSetting from './feed-setting';
 
 export default {
   floorplan,
@@ -16,4 +17,5 @@ export default {
   'virtual-tour': virtualTour,
   'community-cost-guide': communityCostGuide,
   'engrain-pricing': engrainPricing,
+  'feed-setting': feedSetting,
 };

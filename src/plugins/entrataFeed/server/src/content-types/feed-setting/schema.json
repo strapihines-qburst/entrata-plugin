@@ -1,0 +1,37 @@
+{
+  "kind": "singleType",
+  "collectionName": "feed_settings",
+  "info": {
+    "singularName": "feed-setting",
+    "pluralName": "feed-settings",
+    "displayName": "Feed Settings"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "content-manager": {
+      "visible": true
+    },
+    "content-type-builder": {
+      "visible": true
+    }
+  },
+  "attributes": {
+    "availabilitySettings": {
+      "type": "component",
+      "repeatable": false,
+      "component": "plugin::entratafeed.api-params"
+    },
+    "mitsSettings": {
+      "type": "component",
+      "repeatable": false,
+      "component": "plugin::entratafeed.api-params"
+    },
+    "propertyUnitSettings": {
+      "type": "component",
+      "repeatable": false,
+      "component": "plugin::entratafeed.api-params"
+    }
+  }
+}

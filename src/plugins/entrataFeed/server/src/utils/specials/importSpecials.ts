@@ -32,10 +32,10 @@ const importSpecials = async (
     await syncPropertySetting(strapi, propertySpecials);
   }
 
-  for (const item of eligible) {
-    if (!isPropertyLevel(item)) {
-      await syncCollectionSpecial(strapi, item);
-    }
+  const collectionSpecials = eligible.filter((item) => !isPropertyLevel(item));
+
+  if (collectionSpecials.length) {
+    await syncCollectionSpecial(strapi, collectionSpecials);
   }
 };
 
