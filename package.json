@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "description": "A Strapi application",
-   "scripts": {
+  "scripts": {
     "build": "yarn build:entrataFeed && strapi build",
-    "build:entrataFeed": "cd src/plugins/entrataFeed && yarn install && yarn build",
+    "build:entrataFeed": "cd src/plugins/entrataFeed && yarn install --production=false && yarn build",
     "console": "strapi console",
     "deploy": "strapi deploy",
     "dev": "strapi develop",
@@ -29,7 +29,6 @@
     "react-router-dom": "^6.0.0",
     "styled-components": "^6.0.0",
     "pg": "^8.21.0"
-
   },
   "devDependencies": {
     "@types/node": "^20",

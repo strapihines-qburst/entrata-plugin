@@ -33,13 +33,12 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1064.0",
     "@strapi/sdk-plugin": "^6.1.1"
-
   },
   "devDependencies": {
     "@strapi/design-system": "^2.2.0",
     "@strapi/icons": "^2.2.0",
-    "@strapi/strapi": "^5.47.1",
-    "@strapi/typescript-utils": "^5.47.1",
+    "@strapi/strapi": "5.48.1",
+    "@strapi/typescript-utils": "5.48.1",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
     "prettier": "^3.8.4",
