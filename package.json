@@ -4,18 +4,12 @@
   "private": true,
   "description": "A Strapi application",
   "scripts": {
-    "prebuild": "yarn --cwd src/plugins/entrataFeed install && yarn --cwd src/plugins/entrataFeed build",
-    "predevelop": "yarn --cwd src/plugins/entrataFeed build",
-    "predev": "yarn --cwd src/plugins/entrataFeed build",
-    "prewatch": "yarn --cwd src/plugins/entrataFeed build",
     "build": "strapi build",
     "console": "strapi console",
     "deploy": "strapi deploy",
     "dev": "strapi develop",
     "develop": "strapi develop",
-    "watch": "strapi develop",
     "start": "strapi start",
-    "strapi": "strapi",
     "upgrade": "npx @strapi/upgrade latest",
     "upgrade:dry": "npx @strapi/upgrade latest --dry"
   },
