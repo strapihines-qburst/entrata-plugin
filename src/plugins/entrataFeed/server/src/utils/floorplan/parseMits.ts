@@ -8,19 +8,7 @@ const mitsPropertyUnit = async (mitsSettingsApi) => {
       };
     }
   );
-  const amenities = mitsSettingsApi.response.result.PhysicalProperty.Property[0].ILS_Unit.map(
-    (item) => {
-      return {
-        unitsId: item.Units.Unit.Identification?.IDValue,
-        amenities:
-          item.Amenity?.map((amenity) => ({
-            name: amenity["@attributes"]?.AmenityType,
-            description: amenity.Description,
-          })) || [],
-      };
-    }
-  );
-  return { mitsUnits, amenities };
+  return mitsUnits;
 };
 
 export default mitsPropertyUnit;

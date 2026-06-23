@@ -4,7 +4,6 @@ import {
   SPECIAL_UID,
   VIRTUAL_TOUR_UID,
   AMENITY_UID,
-  COMMUNITY_COST_GUIDE_UID,
   ENGRAIN_PRICING_UID,
 } from '../../constants/api-constants';
 
@@ -15,30 +14,34 @@ const specials: FeedDetailFetcher = async (strapi) =>
     status: 'published',
     populate: {
       floorplans: {
-        fields: ['floorplan_id', 'unit_type_id'],
+        fields: ['floorplan_id'],
       },
       units: {
-        fields: ['unit_space_id', 'unitId'],
+        fields: [ 'unitId'],
       },
       specials: {
         populate: {
           links: true,
         },
       },
+      customFloorplans: true,
     },
+    fields: ['special_id', 'special_type', 'floorplanTypes','isOverRide'],
   });
+
 const amenities: FeedDetailFetcher = async (strapi) =>
   strapi.documents(AMENITY_UID).findMany({
     status: 'published',
     populate: {
       floorplans: {
-        fields: ['floorplan_id', 'unit_type_id'],
+        fields: ['floorplan_id'],
       },
       units: {
-        fields: ['unit_space_id', 'unitId'],
+        fields: ['unitId'],
       },
       amenitiesList: true,
     },
+    fields: [ 'floorLevel'],
   });
 
 const virtualTours: FeedDetailFetcher = async (strapi) =>
@@ -46,41 +49,40 @@ const virtualTours: FeedDetailFetcher = async (strapi) =>
     status: 'published',
     populate: {
       floorplans: {
-        fields: ['floorplan_id', 'unit_type_id'],
+        fields: ['floorplan_id'],
       },
       units: {
-        fields: ['unit_space_id', 'unitId'],
+        fields: ['unitId'],
       },
     },
+    // fields: ['floorplans', 'units', 'virtualTourUrl'],
   });
 
-const communityCostGuides: FeedDetailFetcher = async (strapi) =>
-  strapi.documents(COMMUNITY_COST_GUIDE_UID).findMany({
-    status: 'published',
-  });
 
 const engrainPricings: FeedDetailFetcher = async (strapi) =>
-  strapi.documents(ENGRAIN_PRICING_UID).findMany({
+  strapi.documents(ENGRAIN_PRICING_UID).findFirst({
     status: 'published',
+    fields: [ 'engrainPrice'],
   });
 
 const feedDetailFetchers: Record<string, FeedDetailFetcher>[] = [
   { specials },
   { amenities },
   { virtualTours },
-  { communityCostGuides },
   { engrainPricings },
 ];
 
-const getFeedDetails = async (strapi: Core.Strapi) =>
-  Promise.all(
+const getFeedDetails = async (strapi: Core.Strapi) => {
+  const entries = await Promise.all(
     feedDetailFetchers.map(async (entry) => {
       const [key, fetcher] = Object.entries(entry)[0];
 
-      return {
-        [key]: await fetcher(strapi),
-      };
-    }),
+      return [key, await fetcher(strapi)];
+    })
   );
+
+  return Object.fromEntries(entries);
+};
+
 
 export default getFeedDetails;

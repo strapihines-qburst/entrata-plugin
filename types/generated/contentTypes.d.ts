@@ -834,11 +834,18 @@ export interface PluginEntratafeedSpecial extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    customFloorplans: Schema.Attribute.Relation<
+      'oneToMany',
+      'plugin::entratafeed.floorplan'
+    >;
     floorplans: Schema.Attribute.Relation<
       'oneToMany',
       'plugin::entratafeed.floorplan'
     >;
     floorplanTypes: Schema.Attribute.JSON;
+    isOverRide: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',

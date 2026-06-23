@@ -27,6 +27,26 @@
       "required": true,
       "enum": ["floorplan", "unit", "floorplanType"]
     },
+    "isOverRide": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "customFloorplans": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "plugin::entratafeed.floorplan",
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "isOverRide"
+            },
+            true
+          ]
+        }
+      }
+    },
     "floorplans": {
       "type": "relation",
       "relation": "oneToMany",
