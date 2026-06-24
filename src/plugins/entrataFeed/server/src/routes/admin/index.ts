@@ -17,22 +17,7 @@ export default () => ({
         policies: [],
       },
     },
-    {
-      method: "GET",
-      path: "/community-cost-guide",
-      handler: "communityCostGuideController.find",
-      config: {
-        policies: [],
-      },
-    },
-    {
-      method: "POST",
-      path: "/community-cost-guide/publish",
-      handler: "communityCostGuideController.publish",
-      config: {
-        policies: [],
-      },
-    },
+    
     {
       method: "GET",
       path: "/engrain-pricing",

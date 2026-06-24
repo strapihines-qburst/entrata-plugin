@@ -440,6 +440,36 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiFloorPlanPageFloorPlanPage extends Struct.SingleTypeSchema {
+  collectionName: 'floor_plan_pages';
+  info: {
+    displayName: 'Floor Plan Page';
+    pluralName: 'floor-plan-pages';
+    singularName: 'floor-plan-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    bottomContent: Schema.Attribute.Blocks;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    hero: Schema.Attribute.Component<'blocks.hero', false>;
+    introContent: Schema.Attribute.Blocks;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::floor-plan-page.floor-plan-page'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface PluginContentReleasesRelease
   extends Struct.CollectionTypeSchema {
   collectionName: 'strapi_releases';
@@ -576,47 +606,6 @@ export interface PluginEntratafeedAmenity extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface PluginEntratafeedCommunityCostGuide
-  extends Struct.SingleTypeSchema {
-  collectionName: 'community_cost_guides';
-  info: {
-    displayName: 'Community Cost Guide';
-    pluralName: 'community-cost-guides';
-    singularName: 'community-cost-guide';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  pluginOptions: {
-    'content-manager': {
-      visible: true;
-    };
-    'content-type-builder': {
-      visible: true;
-    };
-  };
-  attributes: {
-    communityCostGuideDescription: Schema.Attribute.Blocks;
-    communityCostGuideTitle: Schema.Attribute.String;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    iframeUrl: Schema.Attribute.String;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'plugin::entratafeed.community-cost-guide'
-    > &
-      Schema.Attribute.Private;
-    publishedAt: Schema.Attribute.DateTime;
-    totalCostClarityDescription: Schema.Attribute.Blocks;
-    totalCostClarityTitle: Schema.Attribute.String;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
 export interface PluginEntratafeedEngrainPricing
   extends Struct.SingleTypeSchema {
   collectionName: 'engrain-pricing';
@@ -705,43 +694,6 @@ export interface PluginEntratafeedFeedSetting extends Struct.SingleTypeSchema {
       'plugin::entratafeed.api-params',
       false
     >;
-    publishedAt: Schema.Attribute.DateTime;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
-export interface PluginEntratafeedFloorPlanPage
-  extends Struct.SingleTypeSchema {
-  collectionName: 'floor-plan-pages';
-  info: {
-    description: '';
-    displayName: 'Floor Plan Page';
-    pluralName: 'floor-plan-pages';
-    singularName: 'floor-plan-page';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  pluginOptions: {
-    'content-manager': {
-      visible: true;
-    };
-  };
-  attributes: {
-    bottomContent: Schema.Attribute.Blocks;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    hero: Schema.Attribute.Component<'plugin::entratafeed.hero', false>;
-    introContent: Schema.Attribute.Blocks;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'plugin::entratafeed.floor-plan-page'
-    > &
-      Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -1427,13 +1379,12 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::floor-plan-page.floor-plan-page': ApiFloorPlanPageFloorPlanPage;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::entratafeed.amenity': PluginEntratafeedAmenity;
-      'plugin::entratafeed.community-cost-guide': PluginEntratafeedCommunityCostGuide;
       'plugin::entratafeed.engrain-pricing': PluginEntratafeedEngrainPricing;
       'plugin::entratafeed.feed-setting': PluginEntratafeedFeedSetting;
-      'plugin::entratafeed.floor-plan-page': PluginEntratafeedFloorPlanPage;
       'plugin::entratafeed.floorplan': PluginEntratafeedFloorplan;
       'plugin::entratafeed.property-setting': PluginEntratafeedPropertySetting;
       'plugin::entratafeed.special': PluginEntratafeedSpecial;

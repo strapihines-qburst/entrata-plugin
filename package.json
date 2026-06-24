@@ -15,7 +15,7 @@
     "upgrade": "npx @strapi/upgrade latest",
     "upgrade:dry": "npx @strapi/upgrade latest --dry",
     "watch:entrataFeed": "cd src/plugins/entrataFeed && yarn watch",
-    "watch": "rm -rf types && clear && yarn build:entrataFeed && bash -c 'trap \"kill 0\" EXIT; yarn watch:entrataFeed & strapi develop -- --watch-admin'",
+    "watch": "rm -rf types && clear && yarn build:entrataFeed && bash -c 'trap \"kill 0\" EXIT; yarn watch:entrataFeed & sleep 10 && strapi develop -- --watch-admin'",
     "export": "strapi export --only content --no-encrypt -f strapi-export",
     "import": "strapi import --file "
   },

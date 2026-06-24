@@ -1,13 +1,11 @@
 {
-  "collectionName": "components_entratafeed_heroes",
+  "collectionName": "components_blocks_heroes",
   "info": {
-    "displayName": "Hero",
-    "icon": "picture",
-    "description": ""
+    "displayName": "hero"
   },
   "options": {},
   "attributes": {
-   "media": {
+    "media": {
       "type": "media"
     },
     "title": {
@@ -52,5 +50,6 @@
       "min": 3,
       "max": 10
     }
-  }
+  },
+  "config": {}
 }

@@ -1,25 +1,19 @@
 {
   "kind": "singleType",
-  "collectionName": "floor-plan-pages",
+  "collectionName": "floor_plan_pages",
   "info": {
     "singularName": "floor-plan-page",
     "pluralName": "floor-plan-pages",
-    "displayName": "Floor Plan Page",
-    "description": ""
+    "displayName": "Floor Plan Page"
   },
   "options": {
     "draftAndPublish": true
   },
-  "pluginOptions": {
-    "content-manager": {
-      "visible": true
-    }
-  },
+  "pluginOptions": {},
   "attributes": {
     "hero": {
       "type": "component",
-      "repeatable": false,
-      "component": "plugin::entratafeed.hero"
+      "component": "blocks.hero"
     },
     "introContent": {
       "type": "blocks"
