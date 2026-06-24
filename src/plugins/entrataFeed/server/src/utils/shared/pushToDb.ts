@@ -1,9 +1,15 @@
 import { FLOORPLAN_UID, UNIT_UID } from "../../constants/api-constants";
+import { Redis } from '@upstash/redis'
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+})
 
 const pushToDb = async (
   floorplans: any[],
   mitsUnits: any[],
   units: any[],
+  moveInDate: boolean
 ) => {
   const strapi = (global as any).strapi;
 
@@ -44,6 +50,12 @@ const pushToDb = async (
       units: relatedUnits,
     };
   });
+  if(moveInDate) {
+    
+    // await redis.set(floorplanCacheKey(moveInDate), floorplansWithUnits);
+await redis.get("foo");
+
+  }
 
   const finalFloorplans = floorplansWithUnits.map(({ units: _units, ...rest }) => rest);
 

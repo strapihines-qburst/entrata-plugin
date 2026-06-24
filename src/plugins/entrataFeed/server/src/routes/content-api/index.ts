@@ -24,5 +24,10 @@ export default () => ({
       handler: "engrainCalculatorController.updateEngrainPrice",
       config: bearerAuthConfig,
     },
+    {
+      method: "GET",
+      path: "/floorplans/feed",
+      handler: "floorplanController.getFeed",
+    },
   ],
 });

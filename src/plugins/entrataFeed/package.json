@@ -33,6 +33,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1064.0",
     "@strapi/sdk-plugin": "^6.1.1",
+    "@upstash/redis": "^1.38.0",
     "slugify": "^1.6.9"
   },
   "devDependencies": {

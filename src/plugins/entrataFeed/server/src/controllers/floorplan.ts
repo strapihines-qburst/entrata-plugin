@@ -6,5 +6,11 @@ const controller = ({ strapi }: { strapi: Core.Strapi }) => ({
 
     ctx.body = result;
   },
+
+  async getFeed(ctx) {
+    const result = await strapi.plugin('entratafeed').service('floorplan').getFeed(ctx.query);
+
+    ctx.body = result;
+  },
 });
 export default controller;

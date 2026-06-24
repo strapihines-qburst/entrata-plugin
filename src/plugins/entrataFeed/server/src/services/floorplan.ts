@@ -1,5 +1,5 @@
 import type { Core } from "@strapi/strapi";
-
+import { FLOORPLAN_UID } from "../constants/api-constants";
 import externalApi from "../utils/shared/externalApi";
 import floorplanUnits from "../utils/floorplan/parseFp";
 import mitsPropertyUnit from "../utils/floorplan/parseMits";
@@ -10,7 +10,8 @@ import getFeedDetails from "../utils/shared/dbCalls";
 import s3Service from "./s3";
 
 const ENTRATA_PROPERTY_ID = Number(process.env.ENTRATA_PROPERTY_ID || 100124923);
-
+const entrataUrl = process.env.ENTRATA_URL;
+const entrataApiKey = process.env.ENTRATA_API_KEY;
 const DEFAULT_UNIT_PARAMS = {
   // availableUnitsOnly: "0",
   // unavailableUnitsOnly: "0",
@@ -25,9 +26,6 @@ const DEFAULT_UNIT_PARAMS = {
 export default ({ strapi }: { strapi: Core.Strapi }) => ({
   async getFeedData() {
     try {
-      const entrataUrl = process.env.ENTRATA_URL;
-      const entrataApiKey = process.env.ENTRATA_API_KEY;
-
       const [availability, property, mits, specials] = await Promise.all([
         externalApi(
           "getUnitsAvailabilityAndPricing",
@@ -70,10 +68,13 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
         parsedFp.flat(),
         mitsUnits.flat(),
         units.flat(),
+        null
+
       );
       await importSpecials(strapi, specials);
 
-      const feedDetails = await getFeedDetails(strapi);
+      const feedDetails = await getFeedDetails(strapi,pushToDbResult);
+
       const finalJson = {
       
         floorplans: pushToDbResult,
@@ -85,11 +86,12 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
       return {
         success: true,
         message: `floorplans synced successfully`,
-        url,
-      };
+        feedDetails,
+url      };
     } catch (error) {
       strapi.log.error("Entrata API Error", error);
       throw error;
     }
   },
+
 });
