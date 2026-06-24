@@ -1,0 +1,56 @@
+{
+  "collectionName": "components_entratafeed_heroes",
+  "info": {
+    "displayName": "Hero",
+    "icon": "picture",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+   "media": {
+      "type": "media"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "isHeroSlide": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "isAutoSlide": {
+      "type": "boolean",
+      "required": true,
+      "default": true,
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "isHeroSlide"
+            },
+            true
+          ]
+        }
+      }
+    },
+    "slideInterval": {
+      "type": "integer",
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "isHeroSlide"
+            },
+            true
+          ]
+        }
+      },
+      "default": 3,
+      "min": 3,
+      "max": 10
+    }
+  }
+}

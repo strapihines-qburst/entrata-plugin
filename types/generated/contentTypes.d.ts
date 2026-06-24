@@ -712,6 +712,43 @@ export interface PluginEntratafeedFeedSetting extends Struct.SingleTypeSchema {
   };
 }
 
+export interface PluginEntratafeedFloorPlanPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'floor-plan-pages';
+  info: {
+    description: '';
+    displayName: 'Floor Plan Page';
+    pluralName: 'floor-plan-pages';
+    singularName: 'floor-plan-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+  };
+  attributes: {
+    bottomContent: Schema.Attribute.Blocks;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    hero: Schema.Attribute.Component<'plugin::entratafeed.hero', false>;
+    introContent: Schema.Attribute.Blocks;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'plugin::entratafeed.floor-plan-page'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface PluginEntratafeedFloorplan
   extends Struct.CollectionTypeSchema {
   collectionName: 'floorplans';
@@ -1396,6 +1433,7 @@ declare module '@strapi/strapi' {
       'plugin::entratafeed.community-cost-guide': PluginEntratafeedCommunityCostGuide;
       'plugin::entratafeed.engrain-pricing': PluginEntratafeedEngrainPricing;
       'plugin::entratafeed.feed-setting': PluginEntratafeedFeedSetting;
+      'plugin::entratafeed.floor-plan-page': PluginEntratafeedFloorPlanPage;
       'plugin::entratafeed.floorplan': PluginEntratafeedFloorplan;
       'plugin::entratafeed.property-setting': PluginEntratafeedPropertySetting;
       'plugin::entratafeed.special': PluginEntratafeedSpecial;
