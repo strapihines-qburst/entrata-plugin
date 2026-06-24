@@ -80,7 +80,7 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
         ...feedDetails,
       };
 
-     const url = await s3Service().uploadJson(finalJson, "entrata-feed.json");
+     const url = await s3Service().uploadJson(finalJson, "feeds/floorplans.json");
 
       return {
         success: true,
