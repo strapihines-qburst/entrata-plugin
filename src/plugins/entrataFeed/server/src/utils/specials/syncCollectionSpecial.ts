@@ -78,14 +78,14 @@ const syncCollectionSpecial = async (strapi, specials) => {
       [relationField]: relationDocumentIds,
       floorplanTypes,
       customFloorplans: existingSpecial?.customFloorplans || [],
-      isOverRide: existingSpecial?.specials?.isOverRide || false,
+      isOverRide: existingSpecial?.isOverRide || false,
       specials: {
         specialTitle: item.special_name,
         specialDescription: item.description,
-        isOverRide: existingSpecial?.specials?.isOverRide ?? false,
-        overRideText: existingSpecial?.specials?.overRideText ?? "",
+        isOverRide: existingSpecial?.specials?.isOverRide || false,
+        overRideText: existingSpecial?.specials?.overRideText || "",
         overRideDescription:
-          existingSpecial?.specials?.overRideDescription ?? "",
+          existingSpecial?.specials?.overRideDescription || "",
       },
     };
 
