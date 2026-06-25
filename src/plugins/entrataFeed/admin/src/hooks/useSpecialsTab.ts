@@ -4,7 +4,6 @@ import { useIntl } from "react-intl";
 
 import { getTranslation } from "../utils/getTranslation";
 import { PROPERTY_SETTING_PATH } from "../utils/specials/constants";
-import { useInvalidatePropertySettingCache } from "../utils/specials/invalidatePropertySettingCache";
 import {
   createManualTopSpecial,
   emptyPropertySettingForm,
@@ -17,7 +16,6 @@ export const useSpecialsTab = () => {
   const { formatMessage } = useIntl();
   const { get, put } = useFetchClient();
   const { toggleNotification } = useNotification();
-  const invalidatePropertySettingCache = useInvalidatePropertySettingCache();
 
   const [form, setForm] = useState<PropertySettingForm>(emptyPropertySettingForm);
   const formRef = useRef(form);
@@ -71,7 +69,6 @@ export const useSpecialsTab = () => {
           type: "success",
           message: formatMessage({ id: getTranslation(successMessageId) }),
         });
-        invalidatePropertySettingCache();
         await loadSpecials();
       } catch {
         toggleNotification({
@@ -82,7 +79,7 @@ export const useSpecialsTab = () => {
         setIsBusy(false);
       }
     },
-    [formatMessage, invalidatePropertySettingCache, loadSpecials, toggleNotification]
+    [formatMessage, loadSpecials, toggleNotification]
   );
 
   const handleSave = useCallback(() => {
@@ -121,7 +118,6 @@ export const useSpecialsTab = () => {
             id: getTranslation("specials.delete.success"),
           }),
         });
-        invalidatePropertySettingCache();
         await loadSpecials();
       } catch {
         toggleNotification({
@@ -133,14 +129,7 @@ export const useSpecialsTab = () => {
         setIsBusy(false);
       }
     },
-    [
-      form,
-      formatMessage,
-      invalidatePropertySettingCache,
-      loadSpecials,
-      persistSetting,
-      toggleNotification,
-    ]
+    [form, formatMessage, loadSpecials, persistSetting, toggleNotification]
   );
 
   const addManualSpecial = useCallback(() => {
