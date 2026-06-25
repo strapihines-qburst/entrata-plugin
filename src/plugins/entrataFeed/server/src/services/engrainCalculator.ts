@@ -2,16 +2,16 @@ import { getEngrainData } from '../utils/engrain/engrainCalculator';
 import { FEED_SETTING_UID } from '../constants/api-constants';
 
 const findFeedSetting = async () => {
-  const published = await strapi.documents(FEED_SETTING_UID).findFirst({
-    status: 'published',
+  const draft = await strapi.documents(FEED_SETTING_UID).findFirst({
+    status: 'draft',
   });
 
-  if (published) {
-    return published;
+  if (draft) {
+    return draft;
   }
 
   return strapi.documents(FEED_SETTING_UID).findFirst({
-    status: 'draft',
+    status: 'published',
   });
 };
 
@@ -23,7 +23,7 @@ const saveFeedSetting = async (data: Record<string, unknown>) => {
     return strapi.documents(FEED_SETTING_UID).update({
       documentId,
       data: fields as never,
-      status: 'published',
+      status: 'draft',
     });
   }
 
@@ -33,13 +33,13 @@ const saveFeedSetting = async (data: Record<string, unknown>) => {
     return strapi.documents(FEED_SETTING_UID).update({
       documentId: existing.documentId,
       data: fields as never,
-      status: 'published',
+      status: 'draft',
     });
   }
 
   return strapi.documents(FEED_SETTING_UID).create({
     data: fields,
-    status: 'published',
+    status: 'draft',
   });
 };
 
@@ -51,7 +51,8 @@ const updateEngrainPrice = async (data: Record<string, unknown> = {}) => {
   }
 
   const feedSetting = documentId
-    ? await strapi.documents(FEED_SETTING_UID).findOne({ documentId })
+    ? (await strapi.documents(FEED_SETTING_UID).findOne({ documentId, status: 'draft' })) ??
+      (await strapi.documents(FEED_SETTING_UID).findOne({ documentId, status: 'published' }))
     : await findFeedSetting();
 
   if (!feedSetting) {

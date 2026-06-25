@@ -14,9 +14,16 @@ type FeedSettingEntryActionsProps = {
   slug?: string;
 };
 
+type FeedSettingDocument = {
+  documentId?: string;
+  enableEngrainPricing?: boolean;
+  engrainApiUrl?: string;
+  engrainPrice?: string;
+};
+
 const FeedSettingEntryActions = ({ slug }: FeedSettingEntryActionsProps) => {
   const { formatMessage } = useIntl();
-  const { post } = useFetchClient();
+  const { get, post } = useFetchClient();
   const { toggleNotification } = useNotification();
   const [isSyncingEngrain, setIsSyncingEngrain] = useState(false);
   const [isSyncingS3, setIsSyncingS3] = useState(false);
@@ -25,15 +32,32 @@ const FeedSettingEntryActions = ({ slug }: FeedSettingEntryActionsProps) => {
     return null;
   }
 
+  const loadFeedSetting = async () => {
+    const { data } = await get<{ data?: FeedSettingDocument }>(
+      `/content-manager/single-types/${FEED_SETTING_MODEL}?status=draft`,
+    );
+
+    return data.data ?? (data as FeedSettingDocument);
+  };
+
   const handleSyncEngrain = async () => {
     setIsSyncingEngrain(true);
 
     try {
-      await post(FEED_SETTING_SYNC_ENGRAIN_PATH);
+      const setting = await loadFeedSetting();
+
+      await post(FEED_SETTING_SYNC_ENGRAIN_PATH, {
+          documentId: setting.documentId,
+          enableEngrainPricing: setting.enableEngrainPricing,
+          engrainApiUrl: setting.engrainApiUrl,
+          engrainPrice: setting.engrainPrice,
+      });
+
       toggleNotification({
         type: 'success',
         message: formatMessage({ id: getTranslation('feedSetting.sync.success') }),
       });
+      window.location.reload();
     } catch {
       toggleNotification({
         type: 'danger',
