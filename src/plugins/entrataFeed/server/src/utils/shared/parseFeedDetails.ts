@@ -67,10 +67,89 @@ const parseSpecial = (entry: any) => ({
     : null,
 });
 
-const parseFeedDetail = (entry?: Record<string, any>) => ({
-  enableEngrainPricing: entry?.enableEngrainPricing,
-  engrainPrice: entry?.engrainPrice,
-});
+const getPropertyFilters = (floorplans: any[]) => {
+  const result = floorplans.reduce(
+    (acc, item) => ({
+      maxRent: Math.max(acc.maxRent, item.minRent),
+      minRent: Math.min(acc.minRent, item.minRent),
+      maxSqft: Math.max(acc.maxSqft, item.minSqFt),
+      minSqft: Math.min(acc.minSqft, item.minSqFt),
+    }),
+    {
+      maxRent: -Infinity,
+      minRent: Infinity,
+      maxSqft: -Infinity,
+      minSqft: Infinity,
+    },
+  );
+
+  return {
+    minRent: Math.floor(result.minRent / 100) * 100,
+    maxRent: Math.ceil(result.maxRent / 100) * 100,
+    minSqft: Math.floor(result.minSqft / 100) * 100,
+    maxSqft: Math.ceil(result.maxSqft / 100) * 100,
+  };
+};
+
+const getBedFilter = (floorplans: any[]) =>
+  [...new Set(
+    floorplans
+      .map((item) => Number(item.bed_count))
+      .filter((count) => Number.isFinite(count)),
+  )].sort((a, b) => a - b);
+
+const getBedLabel = (count: number) => (count === 0 ? 'Studio' : `${count} Bed`);
+
+const buildBedFilterLabels = (bedFilter: number[]) =>
+  bedFilter.map((count) => getBedLabel(count));
+
+const buildIncrementFilter = (min: number, max: number, increment: number) => {
+  if (!Number.isFinite(min) || !Number.isFinite(max) || increment <= 0 || min > max) {
+    return [];
+  }
+
+  const values = [];
+
+  for (let value = min; value <= max; value += increment) {
+    values.push(value);
+  }
+
+  if (values[values.length - 1] !== max) {
+    values.push(max);
+  }
+
+  return values;
+};
+
+const parseFeedDetail = (
+  entry?: Record<string, any>,
+  floorplans: any[] = [],
+) => {
+  const priceIncrement = entry?.priceIncrement ?? 1000;
+  const sqftIncrement = entry?.sqftIncrement ?? 500;
+  const bounds = floorplans.length > 0 ? getPropertyFilters(floorplans) : null;
+  const bedFilter = floorplans.length > 0 ? getBedFilter(floorplans) : [];
+
+  return {
+    enableEngrainPricing: entry?.enableEngrainPricing,
+    engrainPrice: entry?.engrainPrice,
+    priceIncrement,
+    sqftIncrement,
+    ...(bounds ?? {}),
+    ...(bounds
+      ? {
+          rentFilter: buildIncrementFilter(bounds.minRent, bounds.maxRent, priceIncrement),
+          sqftFilter: buildIncrementFilter(bounds.minSqft, bounds.maxSqft, sqftIncrement),
+        }
+      : {}),
+    ...(bedFilter.length > 0
+      ? {
+          bedFilter,
+          bedFilterLabels: buildBedFilterLabels(bedFilter),
+        }
+      : {}),
+  };
+};
 
 const parseFeedDetails = (
   {
@@ -96,10 +175,11 @@ const parseFeedDetails = (
     virtualTours: Array.isArray(virtualTours)
       ? virtualTours.map((entry) => parseVirtualTour(entry, unitIdsByFloorplanId))
       : [],
-    feedDetails: parseFeedDetail(
+    propertySpecifications: parseFeedDetail(
       feedDetails && typeof feedDetails === 'object'
         ? (feedDetails as Record<string, any>)
         : undefined,
+      floorplans,
     ),
   };
 };

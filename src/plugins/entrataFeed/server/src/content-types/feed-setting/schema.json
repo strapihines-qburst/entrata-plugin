@@ -48,6 +48,14 @@
           ]
         }
       }
+    },
+    "priceIncrement": {
+      "type": "integer",
+      "default": 1000
+    },
+    "sqftIncrement": {
+      "type": "integer",
+      "default": 500
     }
   }
 }

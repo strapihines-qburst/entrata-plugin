@@ -639,7 +639,9 @@ export interface PluginEntratafeedFeedSetting extends Struct.SingleTypeSchema {
       'plugin::entratafeed.feed-setting'
     > &
       Schema.Attribute.Private;
+    priceIncrement: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<1000>;
     publishedAt: Schema.Attribute.DateTime;
+    sqftIncrement: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<500>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

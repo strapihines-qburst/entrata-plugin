@@ -14,6 +14,19 @@ const feedCache = new LRUCache<string, unknown>({
   ttl: FEED_CACHE_TTL_MS,
 });
 
+const buildFinalFeedJson = async (
+  strapi: Core.Strapi,
+  floorplansWithUnits: unknown,
+) => {
+  const floorplans = floorplansWithUnits as Record<string, unknown>[];
+  const feedDetails = await getFeedDetails(strapi, floorplans);
+
+  return {
+    floorplans,
+    ...feedDetails,
+  };
+};
+
 export default ({ strapi }: { strapi: Core.Strapi }) => ({
   async getFeedData() {
     try {
@@ -30,18 +43,13 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
       await syncToStrapi(strapi, floorplansWithUnits);
       await importSpecials(strapi, specials);
   
-      const feedDetails = await getFeedDetails(strapi, floorplansWithUnits);
-  
-      const finalJson = {
-        floorplans: floorplansWithUnits,
-        ...feedDetails,
-      };
+      const finalJson = await buildFinalFeedJson(strapi, floorplansWithUnits);
   
       const url = await s3Service().uploadJson(
         finalJson,
         'feeds/floorplans.json',
       );
-  
+
       return {
         success: true,
         message: 'floorplans synced successfully',
@@ -85,15 +93,7 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
       throw new Error('Cached floorplan feed not found. Run generate first.');
     }
 
-    const feedDetails = await getFeedDetails(
-      strapi,
-      floorplansWithUnits as Record<string, unknown>[],
-    );
-
-    const finalJson = {
-      floorplans: floorplansWithUnits,
-      ...feedDetails,
-    };
+    const finalJson = await buildFinalFeedJson(strapi, floorplansWithUnits);
 
     const url = await s3Service().uploadJson(finalJson, 'feeds/floorplans.json');
 

@@ -40,8 +40,10 @@ const virtualTours: FeedDetailFetcher = async (strapi) =>
 const feedDetails: FeedDetailFetcher = async (strapi) =>
   strapi.documents(FEED_SETTING_UID).findFirst({
     status: 'published',
-    fields: ['enableEngrainPricing','engrainPrice'],
+    fields: ['enableEngrainPricing','engrainPrice','priceIncrement','sqftIncrement'],
   });
+
+  
 
 const getFeedDetails = async (strapi: Core.Strapi, floorplans: any[] = []) => {
   const [specialsData, amenitiesData, virtualToursData, feedDetailsData] = await Promise.all([
