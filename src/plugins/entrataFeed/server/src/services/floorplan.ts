@@ -1,97 +1,59 @@
-import type { Core } from "@strapi/strapi";
-import { FLOORPLAN_UID } from "../constants/api-constants";
-import externalApi from "../utils/shared/externalApi";
-import floorplanUnits from "../utils/floorplan/parseFp";
-import mitsPropertyUnit from "../utils/floorplan/parseMits";
-import unitsProperty from "../utils/floorplan/parseUnits";
-import pushToDb from "../utils/shared/pushToDb";
-import importSpecials from "../utils/specials";
-import getFeedDetails from "../utils/shared/dbCalls";
-import s3Service from "./s3";
-
-const ENTRATA_PROPERTY_ID = Number(process.env.ENTRATA_PROPERTY_ID || 100124923);
-const entrataUrl = process.env.ENTRATA_URL;
-const entrataApiKey = process.env.ENTRATA_API_KEY;
-const DEFAULT_UNIT_PARAMS = {
-  // availableUnitsOnly: "0",
-  // unavailableUnitsOnly: "0",
-  // skipPricing: "0",
-  // showChildProperties: "1",
-  includeDisabledFloorplans: '1',
-  includeDisabledUnits: '1',
-  showUnitSpaces: '1',
-  useSpaceConfiguration: "1",
-};
+import type { Core } from '@strapi/strapi';
+import { fetchEntrataFeed, fetchEntrataSpecials } from '../utils/entrata/fetchEntrataData';
+import syncToStrapi from '../utils/persist/syncToStrapi';
+import importSpecials from '../utils/specials';
+import getFeedDetails from '../utils/shared/dbCalls';
+import s3Service from './s3';
 
 export default ({ strapi }: { strapi: Core.Strapi }) => ({
   async getFeedData() {
     try {
-      const [availability, property, mits, specials] = await Promise.all([
-        externalApi(
-          "getUnitsAvailabilityAndPricing",
-          { propertyId: ENTRATA_PROPERTY_ID, ...DEFAULT_UNIT_PARAMS },
-          entrataUrl,
-          entrataApiKey,
-          "r1"
-        ),
-        externalApi(
-          "getPropertyUnits",
-          { propertyIds: ENTRATA_PROPERTY_ID, ...DEFAULT_UNIT_PARAMS },
-          entrataUrl,
-          entrataApiKey,
-          "r1"
-        ),
-        externalApi(
-          "getMitsPropertyUnits",
-          { propertyIds: ENTRATA_PROPERTY_ID, ...DEFAULT_UNIT_PARAMS },
-          entrataUrl,
-          entrataApiKey,
-          "r1"
-        ),
-        externalApi(
-          "getSpecials",
-          { propertyId: ENTRATA_PROPERTY_ID },
-          entrataUrl,
-          entrataApiKey,
-          "r4"
-        ),
+      const [floorplansWithUnits, specials] = await Promise.all([
+        fetchEntrataFeed(),
+        fetchEntrataSpecials(),
       ]);
 
-      const { parsedFp, parsedUnits } = await floorplanUnits(availability);
-
-      const [units,  mitsUnits ] = await Promise.all([
-        unitsProperty(property, parsedUnits),
-        mitsPropertyUnit(mits),
-      ]);
-
-      const pushToDbResult = await pushToDb(
-        parsedFp.flat(),
-        mitsUnits.flat(),
-        units.flat(),
-        null
-
-      );
+      await syncToStrapi(strapi, floorplansWithUnits);
       await importSpecials(strapi, specials);
 
-      const feedDetails = await getFeedDetails(strapi,pushToDbResult);
+      const feedDetails = await getFeedDetails(strapi, floorplansWithUnits);
 
       const finalJson = {
-      
-        floorplans: pushToDbResult,
+        floorplans: floorplansWithUnits,
         ...feedDetails,
       };
 
-     const url = await s3Service().uploadJson(finalJson, "feeds/floorplans.json");
+      const url = await s3Service().uploadJson(finalJson, 'feeds/floorplans.json');
 
       return {
         success: true,
-        message: `floorplans synced successfully`,
-        feedDetails,
-url      };
+        message: 'floorplans synced successfully',
+        url,
+      };
     } catch (error) {
-      strapi.log.error("Entrata API Error", error);
+      strapi.log.error('Entrata API Error', error);
       throw error;
     }
   },
 
+  async getFeed(query: { moveInDate?: string }) {
+    const { moveInDate } = query;
+
+    if (!moveInDate) {
+      return {
+        success: false,
+        message: 'Move in date is required',
+      };
+    }
+
+    const floorplansWithUnits = await fetchEntrataFeed({ moveInDate });
+    await syncToStrapi(strapi, floorplansWithUnits);
+
+
+    const finalJson = {
+      floorplans: floorplansWithUnits,
+    };
+
+    return finalJson;
+  },
 });

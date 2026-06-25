@@ -1,10 +1,6 @@
 import type { Core } from '@strapi/strapi';
 
-import {
-  SPECIAL_UID,
-  AMENITY_UID,
-  VIRTUAL_TOUR_UID,
-} from '../../constants/api-constants';
+import { SPECIAL_UID, AMENITY_UID, VIRTUAL_TOUR_UID } from '../../constants/api-constants';
 import parseFeedDetails from './parseFeedDetails';
 
 type FeedDetailFetcher = (strapi: Core.Strapi) => Promise<unknown>;
@@ -55,7 +51,7 @@ const getFeedDetails = async (strapi: Core.Strapi, floorplans: any[] = []) => {
       amenities: amenitiesData,
       virtualTours: virtualToursData,
     },
-    floorplans,
+    floorplans
   );
 };
 
