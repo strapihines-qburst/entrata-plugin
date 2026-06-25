@@ -12,5 +12,11 @@ const controller = ({ strapi }: { strapi: Core.Strapi }) => ({
 
     ctx.body = result;
   },
+
+  async syncFeed(ctx) {
+    const result = await strapi.plugin('entratafeed').service('floorplan').syncFeed();
+
+    ctx.body = result;
+  },
 });
 export default controller;

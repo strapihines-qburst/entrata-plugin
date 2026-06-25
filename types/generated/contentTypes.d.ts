@@ -606,54 +606,6 @@ export interface PluginEntratafeedAmenity extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface PluginEntratafeedEngrainPricing
-  extends Struct.SingleTypeSchema {
-  collectionName: 'engrain-pricing';
-  info: {
-    description: '';
-    displayName: 'Engrain Pricing';
-    pluralName: 'engrain-pricing';
-    singularName: 'engrain-pricing';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  pluginOptions: {
-    'content-manager': {
-      visible: true;
-    };
-    'content-type-builder': {
-      visible: true;
-    };
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    description: Schema.Attribute.Text;
-    enableEngrainPricing: Schema.Attribute.Boolean &
-      Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<false>;
-    engrainApiUrl: Schema.Attribute.String &
-      Schema.Attribute.DefaultTo<'https://api.sightmap.com/v1/assets/21672/multifamily/expenses'>;
-    engrainFeeCalculatorTitle: Schema.Attribute.String &
-      Schema.Attribute.DefaultTo<'Budget With Ease'>;
-    engrainPrice: Schema.Attribute.String;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'plugin::entratafeed.engrain-pricing'
-    > &
-      Schema.Attribute.Private;
-    longDisclaimer: Schema.Attribute.Text;
-    publishedAt: Schema.Attribute.DateTime;
-    shortDisclaimer: Schema.Attribute.String;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
 export interface PluginEntratafeedFeedSetting extends Struct.SingleTypeSchema {
   collectionName: 'feed_settings';
   info: {
@@ -673,27 +625,20 @@ export interface PluginEntratafeedFeedSetting extends Struct.SingleTypeSchema {
     };
   };
   attributes: {
-    availabilitySettings: Schema.Attribute.Component<
-      'plugin::entratafeed.api-params',
-      false
-    >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    enableEngrainPricing: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    engrainApiUrl: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'https://api.sightmap.com/v1/assets/21672/multifamily/expenses'>;
+    engrainPrice: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'plugin::entratafeed.feed-setting'
     > &
       Schema.Attribute.Private;
-    mitsSettings: Schema.Attribute.Component<
-      'plugin::entratafeed.api-params',
-      false
-    >;
-    propertyUnitSettings: Schema.Attribute.Component<
-      'plugin::entratafeed.api-params',
-      false
-    >;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -1383,7 +1328,6 @@ declare module '@strapi/strapi' {
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::entratafeed.amenity': PluginEntratafeedAmenity;
-      'plugin::entratafeed.engrain-pricing': PluginEntratafeedEngrainPricing;
       'plugin::entratafeed.feed-setting': PluginEntratafeedFeedSetting;
       'plugin::entratafeed.floorplan': PluginEntratafeedFloorplan;
       'plugin::entratafeed.property-setting': PluginEntratafeedPropertySetting;

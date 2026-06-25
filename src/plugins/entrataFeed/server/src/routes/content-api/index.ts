@@ -29,5 +29,10 @@ export default () => ({
       path: "/floorplans/feed",
       handler: "floorplanController.getFeed",
     },
+    {
+      method: "GET",
+      path: "/floorplans/feed/syncFeed",
+      handler: "floorplanController.syncFeed",
+    },
   ],
 });

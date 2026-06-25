@@ -1,6 +1,6 @@
 import type { Core } from '@strapi/strapi';
 
-import { SPECIAL_UID, AMENITY_UID, VIRTUAL_TOUR_UID } from '../../constants/api-constants';
+import { SPECIAL_UID, AMENITY_UID, VIRTUAL_TOUR_UID, FEED_SETTING_UID } from '../../constants/api-constants';
 import parseFeedDetails from './parseFeedDetails';
 
 type FeedDetailFetcher = (strapi: Core.Strapi) => Promise<unknown>;
@@ -37,12 +37,18 @@ const virtualTours: FeedDetailFetcher = async (strapi) =>
     },
     fields: ['virtualTourLink'],
   });
+const feedDetails: FeedDetailFetcher = async (strapi) =>
+  strapi.documents(FEED_SETTING_UID).findFirst({
+    status: 'published',
+    fields: ['enableEngrainPricing','engrainPrice'],
+  });
 
 const getFeedDetails = async (strapi: Core.Strapi, floorplans: any[] = []) => {
-  const [specialsData, amenitiesData, virtualToursData] = await Promise.all([
+  const [specialsData, amenitiesData, virtualToursData, feedDetailsData] = await Promise.all([
     specials(strapi),
     amenities(strapi),
     virtualTours(strapi),
+    feedDetails(strapi),
   ]);
 
   return parseFeedDetails(
@@ -50,6 +56,7 @@ const getFeedDetails = async (strapi: Core.Strapi, floorplans: any[] = []) => {
       specials: specialsData,
       amenities: amenitiesData,
       virtualTours: virtualToursData,
+      feedDetails: feedDetailsData,
     },
     floorplans
   );

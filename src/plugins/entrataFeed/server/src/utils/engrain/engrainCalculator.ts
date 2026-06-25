@@ -1,6 +1,22 @@
-const ENGRAIN_PRICING_UID = "plugin::entratafeed.engrain-pricing";
+import { FEED_SETTING_UID } from '../../constants/api-constants';
 
-const getEngrainData = async (responseData: any) => {
+const pushEngrainPrice = async (
+  documentId: string,
+  engrainPriceData: string | number,
+) => {
+  await strapi.documents(FEED_SETTING_UID).update({
+    documentId,
+    data: {
+      engrainPrice: '$' + engrainPriceData.toString(),
+    } as never,
+    status: 'published',
+  });
+};
+
+const getEngrainData = async (responseData: {
+  engrainApiUrl?: string;
+  documentId?: string;
+}) => {
   const res = await fetch(`${responseData?.engrainApiUrl || process.env.ENGRAIN_API_URL}`, {
     headers: {
       'api-key': process.env.API_KEY,
@@ -13,7 +29,6 @@ const getEngrainData = async (responseData: any) => {
   let amount = 0;
   let minAmount = 0;
   let maxAmount = 0;
-  // Calculate the sum of 'amount.amount' fields that meet the filter conditions
   data.map((el: any) => {
     if (el.is_required && el.is_enabled && el.frequency === 'monthly' && el.value_type !== 'text') {
       if (el.value_type === 'amount') {
@@ -27,7 +42,11 @@ const getEngrainData = async (responseData: any) => {
   });
 
   const engrainPriceData = buildEngrainPrice(amount, minAmount, maxAmount);
-  await pushToDb(responseData, engrainPriceData);
+
+  if (responseData.documentId) {
+    await pushEngrainPrice(responseData.documentId, engrainPriceData);
+  }
+
   return engrainPriceData;
 };
 
@@ -41,13 +60,3 @@ const buildEngrainPrice = (amount: number, minAmount: number, maxAmount: number)
 };
 
 export { getEngrainData };
-
-const pushToDb = async (responseData: any, engrainPriceData: string | number) => {
-  await strapi.documents(ENGRAIN_PRICING_UID).update({
-    documentId: responseData.documentId,
-    data: {
-      engrainPrice: '$' + engrainPriceData.toString(),
-    } as never,
-    status: 'published',
-  });
-};

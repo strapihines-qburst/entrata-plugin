@@ -4,9 +4,9 @@ const asArray = <T>(value: T | T[] | null | undefined): T[] =>
 const formatDate = (date?: string) => {
   if (!date) return null;
 
-  const [month, day, year] = date.split("/");
+  const [month, day, year] = date.split('/');
 
-  return `${year}/${month.padStart(2, "0")}/${day.padStart(2, "0")}`;
+  return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 };
 
 const unitsProperty = async (propertySettingsApi: any, parsedUnits: any[]) => {
@@ -16,29 +16,22 @@ const unitsProperty = async (propertySettingsApi: any, parsedUnits: any[]) => {
   const unitEntries = asArray(propertyEntry?.units?.unit);
 
   // Match by unitId + floorPlanId
-  const unitMap = new Map(
-    unitEntries.map((unit) => [
-      `${unit.id}-${unit.floorPlanId}`,
-      unit,
-    ])
-  );
-  
+  const unitMap = new Map(unitEntries.map((unit) => [`${unit.id}-${unit.floorPlanId}`, unit]));
+
   const units = parsedUnits.flatMap((parsedUnit) => {
-    const sourceUnit = unitMap.get(
-      `${parsedUnit.unitId}-${parsedUnit.floorplan_id}`
-    );
-  
+    const sourceUnit = unitMap.get(`${parsedUnit.unitId}-${parsedUnit.floorplan_id}`);
+
     if (!sourceUnit) return [];
-  
+
     const unitSpaces = asArray(sourceUnit.unitSpaces?.unitSpace);
-  
+
     return unitSpaces.map((unitSpace) => {
       const rentAttributes = unitSpace.rent || {};
       const termRent = asArray(rentAttributes.termRent);
-  
-      const bestPrice =
-        termRent.find((term) => term.isBestPrice === true)?.rent || 0;
-  
+      const bestPriceTerm = termRent.find((term) => term.isBestPrice === '1');
+
+      const bestPrice = bestPriceTerm ? bestPriceTerm.rent : 0;
+
       return {
         unitId: Number(sourceUnit.id),
         unit_space_id: Number(unitSpace.unitSpaceId),
@@ -53,7 +46,7 @@ const unitsProperty = async (propertySettingsApi: any, parsedUnits: any[]) => {
         sqft: Number(sourceUnit.SquareFeet),
         deposit: Number(unitSpace.minDeposit || 0),
         has_pricing: Number(unitSpace.hasPricing || 0),
-        best_price: Number(bestPrice || 0),
+        best_price:parseFloat(bestPrice),
         occupancy_type: unitSpace.occupancyTypeName ?? null,
         unit_status: unitSpace.availabilityStatus ?? null,
         availability_url: unitSpace.unitAvailabilityURL ?? null,
@@ -64,6 +57,6 @@ const unitsProperty = async (propertySettingsApi: any, parsedUnits: any[]) => {
   });
 
   return units;
-}
+};
 
 export default unitsProperty;

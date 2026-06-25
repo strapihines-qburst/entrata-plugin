@@ -6,11 +6,12 @@ import getFeedDetails from '../utils/shared/dbCalls';
 import s3Service from './s3';
 import { LRUCache } from 'lru-cache';
 
-const MOVE_IN_DATE_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+const FEED_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+const FLOORPLANS_FEED_CACHE_KEY = 'floorplans-feed';
 
-const moveInDateCache = new LRUCache<string, unknown>({
+const feedCache = new LRUCache<string, unknown>({
   max: 1000,
-  ttl: MOVE_IN_DATE_CACHE_TTL_MS,
+  ttl: FEED_CACHE_TTL_MS,
 });
 
 export default ({ strapi }: { strapi: Core.Strapi }) => ({
@@ -20,19 +21,27 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
         fetchEntrataFeed(),
         fetchEntrataSpecials(),
       ]);
-
+  
+      // Cache raw feed for 1 hour
+      feedCache.set(FLOORPLANS_FEED_CACHE_KEY, floorplansWithUnits, {
+        ttl: FEED_CACHE_TTL_MS,
+      });
+  
       await syncToStrapi(strapi, floorplansWithUnits);
       await importSpecials(strapi, specials);
-
+  
       const feedDetails = await getFeedDetails(strapi, floorplansWithUnits);
-
+  
       const finalJson = {
         floorplans: floorplansWithUnits,
         ...feedDetails,
       };
-
-      const url = await s3Service().uploadJson(finalJson, 'feeds/floorplans.json');
-
+  
+      const url = await s3Service().uploadJson(
+        finalJson,
+        'feeds/floorplans.json',
+      );
+  
       return {
         success: true,
         message: 'floorplans synced successfully',
@@ -43,31 +52,55 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
       throw error;
     }
   },
-
-
   async getFeed(query: { moveInDate?: string }) {
     const { moveInDate } = query;
-
+  
     if (!moveInDate) {
       return {
         success: false,
         message: 'Move in date is required',
       };
     }
-
+  
     const cacheKey = `floorplans-${moveInDate}`;
-
-    const cachedData = moveInDateCache.get(cacheKey);
+  
+    const cachedData = feedCache.get(cacheKey);
     if (cachedData) {
       return cachedData;
     }
-
-    const floorplansWithUnits = await fetchEntrataFeed({ moveInDate });
-
-    moveInDateCache.set(cacheKey, floorplansWithUnits, {
-      ttl: MOVE_IN_DATE_CACHE_TTL_MS,
+  
+    const floorplansWithUnits = await fetchEntrataFeed({
+      moveInDate,
     });
-
+  
+    feedCache.set(cacheKey, floorplansWithUnits);
+  
     return floorplansWithUnits;
+  },
+  
+  async syncFeed() {
+    const floorplansWithUnits = feedCache.get(FLOORPLANS_FEED_CACHE_KEY);
+
+    if (!floorplansWithUnits) {
+      throw new Error('Cached floorplan feed not found. Run generate first.');
+    }
+
+    const feedDetails = await getFeedDetails(
+      strapi,
+      floorplansWithUnits as Record<string, unknown>[],
+    );
+
+    const finalJson = {
+      floorplans: floorplansWithUnits,
+      ...feedDetails,
+    };
+
+    const url = await s3Service().uploadJson(finalJson, 'feeds/floorplans.json');
+
+    return {
+      success: true,
+      message: 'floorplans synced to S3 from cache',
+      url,
+    };
   },
 });

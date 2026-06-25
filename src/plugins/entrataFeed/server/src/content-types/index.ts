@@ -4,7 +4,6 @@ import unit from './unit';
 import special from './special';
 import amenity from './amenity';
 import virtualTour from './virtual-tour';
-import engrainPricing from './engrain-pricing';
 import feedSetting from './feed-setting';
 
 export default {
@@ -14,6 +13,5 @@ export default {
   special,
   amenity,
   'virtual-tour': virtualTour,
-  'engrain-pricing': engrainPricing,
   'feed-setting': feedSetting,
 };

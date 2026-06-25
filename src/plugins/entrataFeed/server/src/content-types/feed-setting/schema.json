@@ -18,20 +18,36 @@
     }
   },
   "attributes": {
-    "availabilitySettings": {
-      "type": "component",
-      "repeatable": false,
-      "component": "plugin::entratafeed.api-params"
+    "enableEngrainPricing": {
+      "type": "boolean",
+      "default": false
     },
-    "mitsSettings": {
-      "type": "component",
-      "repeatable": false,
-      "component": "plugin::entratafeed.api-params"
+    "engrainApiUrl": {
+      "type": "string",
+      "default": "https://api.sightmap.com/v1/assets/21672/multifamily/expenses",
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "enableEngrainPricing"
+            },
+            true
+          ]
+        }
+      }
     },
-    "propertyUnitSettings": {
-      "type": "component",
-      "repeatable": false,
-      "component": "plugin::entratafeed.api-params"
+    "engrainPrice": {
+      "type": "string",
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "enableEngrainPricing"
+            },
+            true
+          ]
+        }
+      }
     }
   }
 }

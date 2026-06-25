@@ -1,4 +1,3 @@
-const ENGRAIN_PRICING_UID = 'plugin::entratafeed.engrain-pricing';
 const FLOORPLAN_UID = 'plugin::entratafeed.floorplan';
 const UNIT_UID = 'plugin::entratafeed.unit';
 const SPECIAL_UID = 'plugin::entratafeed.special';
@@ -7,7 +6,6 @@ const FEED_SETTING_UID = 'plugin::entratafeed.feed-setting';
 const AMENITY_UID = 'plugin::entratafeed.amenity';
 const VIRTUAL_TOUR_UID = 'plugin::entratafeed.virtual-tour';
 export {
-  ENGRAIN_PRICING_UID,
   FLOORPLAN_UID,
   UNIT_UID,
   SPECIAL_UID,

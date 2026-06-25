@@ -19,6 +19,7 @@ const fetchEntrataFeed = async (options: FetchEntrataFeedOptions = {}) => {
     propertyId: ENTRATA_PROPERTY_ID,
     ...DEFAULT_UNIT_PARAMS,
     ...(options.moveInDate ? { preferredMoveInDate: options.moveInDate } : {}),
+    
   };
 
   const [availability, property, mits] = await Promise.all([

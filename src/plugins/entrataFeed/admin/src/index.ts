@@ -2,6 +2,7 @@ import { getTranslation } from "./utils/getTranslation";
 import { PLUGIN_ID } from "./pluginId";
 import { Initializer } from "./components/Initializer";
 import { PluginIcon } from "./components/PluginIcon";
+import { FeedSettingEntryActions } from "./components/FeedSettingEntryActions";
 
 import type { StrapiApp } from "@strapi/strapi/admin";
 
@@ -23,6 +24,13 @@ const plugin: StrapiApp["appPlugins"][string] = {
       initializer: Initializer,
       isReady: false,
       name: PLUGIN_ID,
+    });
+  },
+
+  bootstrap(app) {
+    app.getPlugin('content-manager').injectComponent('editView', 'right-links', {
+      name: 'entratafeed-feed-setting-actions',
+      Component: FeedSettingEntryActions,
     });
   },
 

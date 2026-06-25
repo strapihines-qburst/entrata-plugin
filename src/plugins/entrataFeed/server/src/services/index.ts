@@ -3,7 +3,6 @@ import s3 from "./s3";
 import floorplan from "./floorplan";
 import special from "./specials";
 import engrainCalculator from "./engrainCalculator";
-import feedSetting from "./feedSetting";
 
 export default {
   service,
@@ -11,5 +10,4 @@ export default {
   floorplan,
   special,
   engrainCalculator,
-  feedSetting,
 };

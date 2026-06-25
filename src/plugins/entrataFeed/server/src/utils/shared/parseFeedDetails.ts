@@ -67,12 +67,23 @@ const parseSpecial = (entry: any) => ({
     : null,
 });
 
+const parseFeedDetail = (entry?: Record<string, any>) => ({
+  enableEngrainPricing: entry?.enableEngrainPricing,
+  engrainPrice: entry?.engrainPrice,
+});
+
 const parseFeedDetails = (
   {
     specials,
     amenities,
     virtualTours,
-  }: { specials: unknown; amenities: unknown; virtualTours: unknown },
+    feedDetails,
+  }: {
+    specials?: unknown;
+    amenities?: unknown;
+    virtualTours?: unknown;
+    feedDetails?: unknown;
+  },
   floorplans: any[] = [],
 ) => {
   const unitIdsByFloorplanId = getUnitIdsByFloorplanId(floorplans);
@@ -85,7 +96,11 @@ const parseFeedDetails = (
     virtualTours: Array.isArray(virtualTours)
       ? virtualTours.map((entry) => parseVirtualTour(entry, unitIdsByFloorplanId))
       : [],
+    feedDetails: parseFeedDetail(
+      feedDetails && typeof feedDetails === 'object'
+        ? (feedDetails as Record<string, any>)
+        : undefined,
+    ),
   };
 };
-
 export default parseFeedDetails;

@@ -17,15 +17,6 @@ export default () => ({
         policies: [],
       },
     },
-    
-    {
-      method: "GET",
-      path: "/engrain-pricing",
-      handler: "engrainCalculatorController.find",
-      config: {
-        policies: [],
-      },
-    },
     {
       method: "POST",
       path: "/engrain-pricing/updateEngrainPrice",
@@ -36,24 +27,8 @@ export default () => ({
     },
     {
       method: "POST",
-      path: "/engrain-pricing/publish",
-      handler: "engrainCalculatorController.publish",
-      config: {
-        policies: [],
-      },
-    },
-    {
-      method: "GET",
-      path: "/feed-setting",
-      handler: "feedSettingController.find",
-      config: {
-        policies: [],
-      },
-    },
-    {
-      method: "PUT",
-      path: "/feed-setting",
-      handler: "feedSettingController.update",
+      path: "/floorplans/sync-s3",
+      handler: "floorplanController.syncFeed",
       config: {
         policies: [],
       },
