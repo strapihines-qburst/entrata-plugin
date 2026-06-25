@@ -4,6 +4,14 @@ import syncToStrapi from '../utils/persist/syncToStrapi';
 import importSpecials from '../utils/specials';
 import getFeedDetails from '../utils/shared/dbCalls';
 import s3Service from './s3';
+import { LRUCache } from 'lru-cache';
+
+const MOVE_IN_DATE_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+
+const moveInDateCache = new LRUCache<string, unknown>({
+  max: 1000,
+  ttl: MOVE_IN_DATE_CACHE_TTL_MS,
+});
 
 export default ({ strapi }: { strapi: Core.Strapi }) => ({
   async getFeedData() {
@@ -36,6 +44,7 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
     }
   },
 
+
   async getFeed(query: { moveInDate?: string }) {
     const { moveInDate } = query;
 
@@ -46,14 +55,19 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
       };
     }
 
+    const cacheKey = `floorplans-${moveInDate}`;
+
+    const cachedData = moveInDateCache.get(cacheKey);
+    if (cachedData) {
+      return cachedData;
+    }
+
     const floorplansWithUnits = await fetchEntrataFeed({ moveInDate });
-    await syncToStrapi(strapi, floorplansWithUnits);
 
+    moveInDateCache.set(cacheKey, floorplansWithUnits, {
+      ttl: MOVE_IN_DATE_CACHE_TTL_MS,
+    });
 
-    const finalJson = {
-      floorplans: floorplansWithUnits,
-    };
-
-    return finalJson;
+    return floorplansWithUnits;
   },
 });
