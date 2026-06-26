@@ -47,7 +47,7 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
   
       const url = await s3Service().uploadJson(
         finalJson,
-        `feeds/floorplans.json`,
+        `feeds/${process.env.ENTRATA_PROPERTY_ID}/floorplans.json`,
       );
 
       return {
