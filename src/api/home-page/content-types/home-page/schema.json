@@ -1,0 +1,30 @@
+{
+  "kind": "singleType",
+  "collectionName": "home_pages",
+  "info": {
+    "singularName": "home-page",
+    "pluralName": "home-pages",
+    "displayName": "Home Page"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "hero": {
+      "type": "component",
+      "component": "blocks.hero",
+      "repeatable": false
+    },
+    "imageContent": {
+      "type": "component",
+      "component": "blocks.image-content",
+      "repeatable": false
+    },
+    "textBlock": {
+      "type": "component",
+      "component": "blocks.text-block",
+      "repeatable": false
+    }
+  }
+}

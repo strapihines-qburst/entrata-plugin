@@ -27,6 +27,64 @@ export interface BlocksHero extends Struct.ComponentSchema {
   };
 }
 
+export interface BlocksImageContent extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_image_contents';
+  info: {
+    displayName: 'Image Content';
+  };
+  attributes: {
+    content: Schema.Attribute.Blocks & Schema.Attribute.Required;
+    cta: Schema.Attribute.Component<'elements.link', false>;
+    isReversed: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>;
+    media: Schema.Attribute.Media<'images' | 'videos'>;
+    preTitle: Schema.Attribute.String;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface BlocksTextBlock extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_text_blocks';
+  info: {
+    displayName: 'Text Block';
+  };
+  attributes: {
+    cta: Schema.Attribute.Component<'elements.link', true>;
+    description: Schema.Attribute.Text;
+    isCtaRequired: Schema.Attribute.Boolean;
+    preTitle: Schema.Attribute.String;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface ElementsLink extends Struct.ComponentSchema {
+  collectionName: 'components_elements_links';
+  info: {
+    displayName: 'Link';
+  };
+  attributes: {
+    ctaStyle: Schema.Attribute.Enumeration<['primary', 'secondary']>;
+    href: Schema.Attribute.String & Schema.Attribute.Required;
+    icon: Schema.Attribute.Media<'images'>;
+    showIcon: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>;
+    target: Schema.Attribute.Enumeration<
+      ['_blank', '_self', '_parent', '_top']
+    > &
+      Schema.Attribute.Required;
+    text: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 60;
+        minLength: 1;
+      }>;
+    variant: Schema.Attribute.Enumeration<['link', 'button']> &
+      Schema.Attribute.DefaultTo<'button'>;
+  };
+}
+
 export interface PluginEntratafeedApiParams extends Struct.ComponentSchema {
   collectionName: 'components_entratafeed_api-params';
   info: {
@@ -102,6 +160,9 @@ declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
       'blocks.hero': BlocksHero;
+      'blocks.image-content': BlocksImageContent;
+      'blocks.text-block': BlocksTextBlock;
+      'elements.link': ElementsLink;
       'plugin::entratafeed.api-params': PluginEntratafeedApiParams;
       'plugin::entratafeed.link': PluginEntratafeedLink;
       'plugin::entratafeed.list': PluginEntratafeedList;

@@ -1,0 +1,40 @@
+{
+  "collectionName": "components_blocks_image_contents",
+  "info": {
+    "displayName": "Image Content"
+  },
+  "options": {},
+  "attributes": {
+    "preTitle": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "content": {
+      "type": "blocks",
+      "required": true
+    },
+    "cta": {
+      "type": "component",
+      "component": "elements.link",
+      "repeatable": false
+    },
+    "isReversed": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+   
+    "media": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "videos"
+      ]
+    }
+  },
+  "config": {}
+}

@@ -66,7 +66,40 @@ const parseSpecial = (entry: any) => ({
       }
     : null,
 });
+const parseSpecialDetails = (special: Record<string, unknown> | null | undefined) => {
+  if (!special) {
+    return null;
+  }
 
+  return {
+    ...pick(special, [
+      'specialTitle',
+      'specialDescription',
+      'isOverRide',
+      'showSpecials',
+      'overRideText',
+      'overRideDescription',
+    ]),
+    links: ((special.links as Record<string, unknown>[]) ?? []).map((link) =>
+      pick(link, ['text', 'href', 'target']),
+    ),
+  };
+};
+
+const parsePropertySetting = (entry: Record<string, unknown>) => {
+  const topSpecial = Array.isArray(entry.topSpecial)
+    ? entry.topSpecial
+    : entry.topSpecial
+      ? [entry.topSpecial]
+      : [];
+
+  return {
+    topSpecial: topSpecial
+      .map((special) => parseSpecialDetails(special as Record<string, unknown>))
+      .filter(Boolean),
+    popupSpecial: parseSpecialDetails(entry.popupSpecial as Record<string, unknown> | undefined),
+  };
+};
 const getPropertyFilters = (floorplans: any[]) => {
   const result = floorplans.reduce(
     (acc, item) => ({
@@ -82,13 +115,9 @@ const getPropertyFilters = (floorplans: any[]) => {
       minSqft: Infinity,
     },
   );
-
-  return {
-    minRent: Math.floor(result.minRent / 100) * 100,
-    maxRent: Math.ceil(result.maxRent / 100) * 100,
-    minSqft: Math.floor(result.minSqft / 100) * 100,
-    maxSqft: Math.ceil(result.maxSqft / 100) * 100,
-  };
+  const { minRent, maxRent, minSqft, maxSqft } = result;
+  return { minRent, maxRent, minSqft, maxSqft };
+ 
 };
 
 const getBedFilter = (floorplans: any[]) =>
@@ -103,45 +132,21 @@ const getBedLabel = (count: number) => (count === 0 ? 'Studio' : `${count} Bed`)
 const buildBedFilterLabels = (bedFilter: number[]) =>
   bedFilter.map((count) => getBedLabel(count));
 
-const buildIncrementFilter = (min: number, max: number, increment: number) => {
-  if (!Number.isFinite(min) || !Number.isFinite(max) || increment <= 0 || min > max) {
-    return [];
-  }
 
-  const values = [];
-
-  for (let value = min; value <= max; value += increment) {
-    values.push(value);
-  }
-
-  if (values[values.length - 1] !== max) {
-    values.push(max);
-  }
-
-  return values;
-};
 
 const parseFeedDetail = (
   entry?: Record<string, any>,
   floorplans: any[] = [],
 ) => {
-  const priceIncrement = entry?.priceIncrement ?? 1000;
-  const sqftIncrement = entry?.sqftIncrement ?? 500;
   const bounds = floorplans.length > 0 ? getPropertyFilters(floorplans) : null;
   const bedFilter = floorplans.length > 0 ? getBedFilter(floorplans) : [];
 
   return {
     enableEngrainPricing: entry?.enableEngrainPricing,
     engrainPrice: entry?.engrainPrice,
-    priceIncrement,
-    sqftIncrement,
+    priceIncrement: entry?.priceIncrement ?? 1000,
+    sqftIncrement: entry?.sqftIncrement ?? 500,
     ...(bounds ?? {}),
-    ...(bounds
-      ? {
-          rentFilter: buildIncrementFilter(bounds.minRent, bounds.maxRent, priceIncrement),
-          sqftFilter: buildIncrementFilter(bounds.minSqft, bounds.maxSqft, sqftIncrement),
-        }
-      : {}),
     ...(bedFilter.length > 0
       ? {
           bedFilter,
@@ -157,11 +162,13 @@ const parseFeedDetails = (
     amenities,
     virtualTours,
     feedDetails,
+    propertySetting,
   }: {
     specials?: unknown;
     amenities?: unknown;
     virtualTours?: unknown;
     feedDetails?: unknown;
+    propertySetting?: unknown;
   },
   floorplans: any[] = [],
 ) => {
@@ -181,6 +188,10 @@ const parseFeedDetails = (
         : undefined,
       floorplans,
     ),
+    propertySetting:
+      propertySetting && typeof propertySetting === 'object' && !Array.isArray(propertySetting)
+        ? parsePropertySetting(propertySetting as Record<string, unknown>)
+        : null,
   };
 };
 export default parseFeedDetails;

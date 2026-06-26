@@ -1,0 +1,38 @@
+{
+  "collectionName": "components_blocks_text_blocks",
+  "info": {
+    "displayName": "Text Block"
+  },
+  "options": {},
+  "attributes": {
+    "preTitle": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "isCtaRequired": {
+      "type": "boolean"
+    },
+    "cta": {
+      "type": "component",
+      "component": "elements.link",
+      "repeatable": true,
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "isCtaRequired"
+            },
+            true
+          ]
+        }
+      }
+    }
+  },
+  "config": {}
+}

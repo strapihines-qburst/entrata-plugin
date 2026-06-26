@@ -1,0 +1,77 @@
+{
+  "collectionName": "components_elements_links",
+  "info": {
+    "displayName": "Link"
+  },
+  "options": {},
+  "attributes": {
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60,
+      "required": true
+    },
+    "variant": {
+      "type": "enumeration",
+      "default": "button",
+      "enum": [
+        "link",
+        "button"
+      ]
+    },
+    "target": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "_blank",
+        "_self",
+        "_parent",
+        "_top"
+      ]
+    },
+    "ctaStyle": {
+      "type": "enumeration",
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "variant"
+            },
+            "button"
+          ]
+        }
+      },
+      "enum": [
+        "primary",
+        "secondary"
+      ]
+    },
+    "showIcon": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "icon": {
+      "type": "media",
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "showIcon"
+            },
+            true
+          ]
+        }
+      },
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "href": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "config": {}
+}
