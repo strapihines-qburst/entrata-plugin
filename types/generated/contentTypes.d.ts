@@ -683,7 +683,7 @@ export interface PluginEntratafeedFloorplan
   collectionName: 'floorplans';
   info: {
     description: '';
-    displayName: 'floorplan';
+    displayName: 'Floorplan';
     pluralName: 'floorplans';
     singularName: 'floorplan';
   };
@@ -839,7 +839,7 @@ export interface PluginEntratafeedUnit extends Struct.CollectionTypeSchema {
   collectionName: 'units';
   info: {
     description: '';
-    displayName: 'unit';
+    displayName: 'Unit';
     pluralName: 'units';
     singularName: 'unit';
   };
@@ -855,7 +855,6 @@ export interface PluginEntratafeedUnit extends Struct.CollectionTypeSchema {
     };
   };
   attributes: {
-    amenity: Schema.Attribute.JSON;
     apartment_id: Schema.Attribute.Integer;
     availability_date: Schema.Attribute.String;
     availability_url: Schema.Attribute.String;
