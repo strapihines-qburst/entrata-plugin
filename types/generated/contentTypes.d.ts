@@ -734,6 +734,46 @@ export interface PluginEntratafeedFloorplan
   };
 }
 
+export interface PluginEntratafeedFloorplanType
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'floorplan-types';
+  info: {
+    description: '';
+    displayName: 'Floorplan Type';
+    pluralName: 'floorplan-types';
+    singularName: 'floorplan-type';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+    'content-type-builder': {
+      visible: true;
+    };
+  };
+  attributes: {
+    bedCount: Schema.Attribute.Integer;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'plugin::entratafeed.floorplan-type'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface PluginEntratafeedPropertySetting
   extends Struct.SingleTypeSchema {
   collectionName: 'property_settings';
@@ -1362,6 +1402,7 @@ declare module '@strapi/strapi' {
       'plugin::entratafeed.amenity': PluginEntratafeedAmenity;
       'plugin::entratafeed.feed-setting': PluginEntratafeedFeedSetting;
       'plugin::entratafeed.floorplan': PluginEntratafeedFloorplan;
+      'plugin::entratafeed.floorplan-type': PluginEntratafeedFloorplanType;
       'plugin::entratafeed.property-setting': PluginEntratafeedPropertySetting;
       'plugin::entratafeed.special': PluginEntratafeedSpecial;
       'plugin::entratafeed.unit': PluginEntratafeedUnit;

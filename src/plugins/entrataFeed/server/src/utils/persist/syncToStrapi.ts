@@ -2,6 +2,7 @@ import type { Core } from '@strapi/strapi';
 import type { Modules } from '@strapi/types';
 
 import { FLOORPLAN_UID, UNIT_UID } from '../../constants/api-constants';
+import syncFloorplanTypes from './syncFloorplanTypes';
 
 type UnitInput = Modules.Documents.Params.Data.Input<typeof UNIT_UID> & {
   floorplan?: { documentId: string };
@@ -84,6 +85,8 @@ const syncToStrapi = async (
       floorplanDocIds.set(floorplanId, result.documentId);
     }),
   );
+
+  await syncFloorplanTypes(strapi, finalFloorplans);
 
   const unitDocIds = new Map(propertyUnits.map((u) => [u.unitId, u.documentId]));
 
